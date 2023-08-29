@@ -1,7 +1,8 @@
 from aws_cdk import (
-    # Duration,
     Stack,
-    # aws_sqs as sqs,
+    RemovalPolicy,
+    aws_s3 as s3,
+    aws_iam as iam,
 )
 from constructs import Construct
 
@@ -10,10 +11,30 @@ class AptlyS3PocStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # The code that defines your stack goes here
+        repository = s3.Bucket(
+            scope=self,
+            id="AptlyRepository",
+            auto_delete_objects=True,
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            encryption=s3.BucketEncryption.S3_MANAGED,
+            removal_policy=RemovalPolicy.DESTROY
+        )
 
-        # example resource
-        # queue = sqs.Queue(
-        #     self, "AptlyS3PocQueue",
-        #     visibility_timeout=Duration.seconds(300),
-        # )
+        read_only_role = iam.Role(
+            scope=self,
+            id="AptlyRepositoryReadOnly",
+            assumed_by=iam.AccountPrincipal("778015471639"),
+            description="A role granting read-only access to the Aptly repository."
+        )
+
+        repository.grant_read(read_only_role)
+
+        write_only_role = iam.Role(
+            scope=self,
+            id="AptlyRepositoryWriteOnly",
+            assumed_by=iam.AccountPrincipal("778015471639"),
+            description="A role granting write-only access to the Aptly repository."
+        )
+
+        repository.grant_write(write_only_role)
+
