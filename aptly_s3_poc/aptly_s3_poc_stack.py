@@ -1,3 +1,5 @@
+import os
+
 from aws_cdk import (
     Stack,
     RemovalPolicy,
@@ -5,6 +7,8 @@ from aws_cdk import (
     aws_iam as iam,
 )
 from constructs import Construct
+
+from aptly_s3_poc.github_oidc_principal import GitHubOIDCPrincipal
 
 class AptlyS3PocStack(Stack):
 
@@ -20,9 +24,16 @@ class AptlyS3PocStack(Stack):
             removal_policy=RemovalPolicy.DESTROY
         )
 
+        read_only_group = iam.Group(
+            scope=self,
+            id="AptlyRepositoryReadOnlyGroup"
+        )
+
+        repository.grant_read(read_only_group)
+
         read_only_role = iam.Role(
             scope=self,
-            id="AptlyRepositoryReadOnly",
+            id="AptlyRepositoryReadOnlyRole",
             assumed_by=iam.AccountPrincipal("778015471639"),
             description="A role granting read-only access to the Aptly repository."
         )
@@ -31,10 +42,25 @@ class AptlyS3PocStack(Stack):
 
         write_only_role = iam.Role(
             scope=self,
-            id="AptlyRepositoryWriteOnly",
+            id="AptlyRepositoryWriteOnlyRole",
             assumed_by=iam.AccountPrincipal("778015471639"),
             description="A role granting write-only access to the Aptly repository."
         )
 
         repository.grant_write(write_only_role)
+
+        github_provider = iam.OpenIdConnectProvider(
+            scope=self,
+            id="GitHubOIDCProvider",
+            url="https://token.actions.githubusercontent.com",
+            client_ids=["sts.amazonaws.com"]
+        )
+
+        github_principal = GitHubOIDCPrincipal(
+            provider=github_provider,
+            repo="TSNoble/aptly-s3-poc",
+            environment="Development",
+        )
+
+        write_only_role.grant_assume_role(github_principal)
 
