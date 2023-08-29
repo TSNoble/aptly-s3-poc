@@ -1,0 +1,36 @@
+---
+name: Deploy to AWS
+
+on:
+  workflow_dispatch
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    environment: Deployment
+    env:
+      AWS_GITHUB_PROVIDER_ARN: ${{ secrets.AWS_GITHUB_PROVIDER_ARN }}
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm install -g aws-cdk && pip3 install -r requirements.txt
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOYMENT_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          role-session-name: GithubRunnerDeployment
+      - name: Bootstrap environment
+        run: cdk bootstrap
+      - name: Synthesize stack
+        run: cdk synth AptlyS3PocStack
+      - name: Deploy stack
+        run: cdk deploy --require-approval never AptlyS3PocStack
