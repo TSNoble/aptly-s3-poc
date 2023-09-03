@@ -5,7 +5,7 @@ on:
   workflow_dispatch
 
 jobs:
-  Deploy:
+  Deploy to AWS:
     runs-on: ubuntu-latest
     environment: Deployment
     env:

@@ -1,0 +1,27 @@
+---
+name: Deploy to AWS
+
+on:
+  workflow_dispatch
+
+jobs:
+  Publish Snapshot:
+    runs-on: ubuntu-latest
+    environment: Publish
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install aptly gnupg1 gpgv1
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     role-to-assume: ${{ secrets.AWS_APTLY_PUBLISH_ROLE_ARN }}
+      #     aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      #     role-session-name: GithubRunnerAptlyPublish
+      - name: Import signing key
+        runs:
+          sudo apt-key add aptly_public.pgp
