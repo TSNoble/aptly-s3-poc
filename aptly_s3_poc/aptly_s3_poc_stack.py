@@ -8,12 +8,10 @@ from aws_cdk import (
 )
 from constructs import Construct
 
-from aptly_s3_poc.github_oidc_principal import GitHubOIDCPrincipal
-
 class AptlyS3PocStack(Stack):
 
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
-        super().__init__(scope, construct_id, **kwargs)
+    def __init__(self, scope: Construct, id: str, **kwargs) -> None:
+        super().__init__(scope, id, **kwargs)
 
         repository = s3.Bucket(
             scope=self,
@@ -26,7 +24,7 @@ class AptlyS3PocStack(Stack):
 
         read_only_group = iam.Group(
             scope=self,
-            id="AptlyRepositoryReadOnlyGroup"
+            id="AptlyRepositoryReadOnlyGroup",
         )
 
         repository.grant_read(read_only_group)
@@ -39,7 +37,7 @@ class AptlyS3PocStack(Stack):
         )
 
         repository.grant_read(read_only_role)
-
+        
         write_only_role = iam.Role(
             scope=self,
             id="AptlyRepositoryWriteOnlyRole",
@@ -48,19 +46,3 @@ class AptlyS3PocStack(Stack):
         )
 
         repository.grant_write(write_only_role)
-
-        github_provider = iam.OpenIdConnectProvider(
-            scope=self,
-            id="GitHubOIDCProvider",
-            url="https://token.actions.githubusercontent.com",
-            client_ids=["sts.amazonaws.com"]
-        )
-
-        github_principal = GitHubOIDCPrincipal(
-            provider=github_provider,
-            repo="TSNoble/aptly-s3-poc",
-            environment="Development",
-        )
-
-        write_only_role.grant_assume_role(github_principal)
-
