@@ -1,11 +1,11 @@
 ---
-name: Publish
+name: Publish Snapshot
 
 on:
   workflow_dispatch
 
 jobs:
-  Publish Snapshot:
+  Publish:
     runs-on: ubuntu-latest
     environment: Publish
     permissions:
