@@ -10,7 +10,7 @@ from constructs import Construct
 
 class AptlyS3PocStack(Stack):
 
-    def __init__(self, scope: Construct, id: str, **kwargs) -> None:
+    def __init__(self, scope: Construct, id: str, github_provider_arn: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         repository = s3.Bucket(
@@ -20,6 +20,15 @@ class AptlyS3PocStack(Stack):
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             encryption=s3.BucketEncryption.S3_MANAGED,
             removal_policy=RemovalPolicy.DESTROY
+        )
+
+        github_principal = iam.OpenIdConnectPrincipal(
+            conditions={
+                "StringEquals": {
+                    "{github_provider_arn}:aud": "sts.amazonaws.com",
+                    "{github_provider_arn}:sub": "repo:TSNoble/aptly-s3-poc:environment:Publish",
+                }
+            },
         )
 
         read_only_group = iam.Group(
@@ -32,7 +41,7 @@ class AptlyS3PocStack(Stack):
         read_only_role = iam.Role(
             scope=self,
             id="AptlyRepositoryReadOnlyRole",
-            assumed_by=iam.AccountPrincipal("778015471639"),
+            assumed_by=github_principal,
             description="A role granting read-only access to the Aptly repository."
         )
 
@@ -41,7 +50,7 @@ class AptlyS3PocStack(Stack):
         write_only_role = iam.Role(
             scope=self,
             id="AptlyRepositoryWriteOnlyRole",
-            assumed_by=iam.AccountPrincipal("778015471639"),
+            assumed_by=github_principal,
             description="A role granting write-only access to the Aptly repository."
         )
 
