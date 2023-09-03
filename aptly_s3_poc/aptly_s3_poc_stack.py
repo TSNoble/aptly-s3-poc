@@ -22,7 +22,14 @@ class AptlyS3PocStack(Stack):
             removal_policy=RemovalPolicy.DESTROY
         )
 
+        github_provider = iam.OpenIdConnectProvider.from_open_id_connect_provider_arn(
+            scope=self,
+            id="ImportedGithubOIDCProvider",
+            open_id_connect_provider_arn=github_provider_arn,
+        )
+
         github_principal = iam.OpenIdConnectPrincipal(
+            open_id_connect_provider=github_provider,
             conditions={
                 "StringEquals": {
                     "{github_provider_arn}:aud": "sts.amazonaws.com",
