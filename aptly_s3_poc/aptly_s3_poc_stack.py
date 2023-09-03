@@ -32,8 +32,8 @@ class AptlyS3PocStack(Stack):
             open_id_connect_provider=github_provider,
             conditions={
                 "StringEquals": {
-                    "{github_provider_arn}:aud": "sts.amazonaws.com",
-                    "{github_provider_arn}:sub": "repo:TSNoble/aptly-s3-poc:environment:Publish",
+                    f"{github_provider_arn}:aud": "sts.amazonaws.com",
+                    f"{github_provider_arn}:sub": "repo:TSNoble/aptly-s3-poc:environment:Publish",
                 }
             },
         )
