@@ -33,10 +33,10 @@ jobs:
       - name: Configure S3 apt transport
         run: |
           sudo touch /etc/apt/s3auth.conf
-          echo AccessKeyId=${{ steps.aws-credentials.output.aws-access-key-id}} | sudo dd of=/etc/apt/s3auth.conf oflag=append
-          echo SecretAccessKey=${{ steps.aws-credentials.output.aws-secret-access-key}} | sudo dd of=/etc/apt/s3auth.conf oflag=append
-          echo Token=${{ steps.aws-credentials.output.aws-session-token}} | sudo dd of=/etc/apt/s3auth.conf oflag=append
-          echo Region=${{ secrets.AWS_DEFAULT_REGION }} | sudo dd of=/etc/apt/s3auth.conf oflag=append
+          echo AccessKeyId=${{ steps.aws-credentials.output.aws-access-key-id}} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
+          echo SecretAccessKey=${{ steps.aws-credentials.output.aws-secret-access-key}} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
+          echo Token=${{ steps.aws-credentials.output.aws-session-token}} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
+          echo Region=${{ secrets.AWS_DEFAULT_REGION }} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
           sudo cat /etc/apt/s3auth.conf
       - name: Import signing key
         run: |
