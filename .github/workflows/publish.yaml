@@ -2,8 +2,11 @@
 name: Publish Snapshot
 
 on:
-  workflow_dispatch
-
+  workflow_dispatch:
+    inputs:
+      name:
+        type: string
+        description: The version of the snapshot
 jobs:
   Publish:
     runs-on: ubuntu-latest
