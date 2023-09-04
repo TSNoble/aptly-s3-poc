@@ -37,7 +37,6 @@ jobs:
           echo SecretAccessKey=${{ steps.aws-credentials.outputs.aws-secret-access-key}} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
           echo Token=${{ steps.aws-credentials.outputs.aws-session-token}} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
           echo Region=${{ secrets.AWS_DEFAULT_REGION }} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
-          sudo cat /etc/apt/s3auth.conf
       - name: Import signing key
         run: |
           mkdir /home/runner/.gnupg
