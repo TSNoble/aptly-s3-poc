@@ -27,7 +27,7 @@ jobs:
           role-session-name: GithubRunnerAptlyPublish
       - name: Import signing key
         run:
-          echo -n $APTLY_GPG_PRIVATE_KEY | base64 --decode | sudo apt-key add
+          echo -n ${{ secrets.APTLY_GPG_PRIVATE_KEY}} | base64 --decode | sudo apt-key add
       - name: Publish new Snapshot
         run:
           aptly create repo -distribution=jammy -component=main rivelin-source-dependencies
