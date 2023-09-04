@@ -30,7 +30,7 @@ jobs:
           role-session-name: GithubRunnerAptlyPublish
       - name: Import signing key
         run: |
-          mkdkir /home/runner/.gnupg
+          mkdir /home/runner/.gnupg
           touch /home/runner/.gnupg/pubring.gpg /home/runner/.gnupg/secring.gpg
           echo -n ${{ secrets.APTLY_GPG_PRIVATE_KEY}} | base64 --decode | sudo apt-key add
       - name: Publish new Snapshot
