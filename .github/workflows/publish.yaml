@@ -29,7 +29,7 @@ jobs:
         run:
           echo -n ${{ secrets.APTLY_GPG_PRIVATE_KEY}} | base64 --decode | sudo apt-key add
       - name: Publish new Snapshot
-        run:
+        run: |
           aptly create repo -distribution=jammy -component=main rivelin-source-dependencies
           aptly repo add rivelin-source-dependencies debs
           aptly snapshot create rivelin-source-dependencies-${{ github.event.inputs.version }} from repo rivelin-source-dependencies
