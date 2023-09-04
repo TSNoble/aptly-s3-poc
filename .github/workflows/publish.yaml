@@ -4,7 +4,7 @@ name: Publish Snapshot
 on:
   workflow_dispatch:
     inputs:
-      name:
+      version:
         type: string
         description: The version of the snapshot
 jobs:
