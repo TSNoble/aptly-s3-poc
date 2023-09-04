@@ -33,4 +33,4 @@ jobs:
           aptly repo create -distribution=jammy -component=main -config=.aptly.conf rivelin-source-dependencies
           aptly repo add -config=.aptly.conf rivelin-source-dependencies debs
           aptly snapshot create -config=.aptly.conf rivelin-source-dependencies-${{ github.event.inputs.version }} from repo rivelin-source-dependencies
-          aptly snapshot publish -config=.aptly.conf rivelin-source-dependencies-${{ github.event.inputs.version }} ${{ secrets.AWS_APTLY_REPOSITORY_URL }}
+          aptly publish snapshot -config=.aptly.conf rivelin-source-dependencies-${{ github.event.inputs.version }} ${{ secrets.AWS_APTLY_REPOSITORY_URL }}
