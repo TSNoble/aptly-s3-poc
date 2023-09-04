@@ -29,7 +29,7 @@ jobs:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           role-session-name: GithubRunnerAptlyPublish
       - name: Import signing key
-        run:
+        run: |
           mkdkir /home/runner/.gnupg
           touch /home/runner/.gnupg/pubring.gpg /home/runner/.gnupg/secring.gpg
           echo -n ${{ secrets.APTLY_GPG_PRIVATE_KEY}} | base64 --decode | sudo apt-key add
