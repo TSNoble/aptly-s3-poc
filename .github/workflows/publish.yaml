@@ -18,7 +18,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install aptly
+        run: |
+          echo "deb http://repo.aptly.info/ squeeze main" > /etc/apt/sources.list.d/aptly.list
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EE727D4449467F0E
+          sudo apt-get update && sudo apt-get install -y aptly gpgv1 gnupg1
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
