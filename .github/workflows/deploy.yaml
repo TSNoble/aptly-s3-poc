@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: npm install -g aws-cdk && pip3 install -r requirements.txt
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOYMENT_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
