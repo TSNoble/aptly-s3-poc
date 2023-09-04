@@ -23,11 +23,20 @@ jobs:
           sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EE727D4449467F0E
           sudo apt-get update && sudo apt-get install -y aptly gpgv1 gnupg1 apt-transport-s3
       - name: Configure AWS credentials
+        id: aws-credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: ${{ secrets.AWS_APTLY_PUBLISH_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           role-session-name: GithubRunnerAptlyPublish
+          output-credentials: true
+      - name: Configure S3 apt transport
+        run: |
+          sudo touch /etc/apt/s3auth.conf
+          echo AccessKeyId=${{ aws-credentials.output.aws-access-key-id}} | sudo dd of=/etc/apt/s3auth.conf oflags=append
+          echo SecretAccessKey=${{ aws-credentials.output.aws-secret-access-key}} | sudo dd of=/etc/apt/s3auth.conf oflags=append
+          echo Token=${{ aws-credentials.output.aws-session-token}} | sudo dd of=/etc/apt/s3auth.conf oflags=append
+          echo Region=${{ secrets.AWS_DEFAULT_REGION }} | sudo dd of=/etc/apt/s3auth.conf oflags=append
       - name: Import signing key
         run: |
           mkdir /home/runner/.gnupg
