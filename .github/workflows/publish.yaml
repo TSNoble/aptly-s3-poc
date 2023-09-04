@@ -21,7 +21,7 @@ jobs:
         run: |
           echo "deb http://repo.aptly.info/ squeeze main" | sudo dd of=/etc/apt/sources.list.d/aptly.list
           sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EE727D4449467F0E
-          sudo apt-get update && sudo apt-get install -y aptly gpgv1 gnupg1
+          sudo apt-get update && sudo apt-get install -y aptly gpgv1 gnupg1 apt-transport-s3
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
