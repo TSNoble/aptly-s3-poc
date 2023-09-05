@@ -31,11 +31,9 @@ jobs:
           role-session-name: GithubRunnerAptlyPublish
       - name: Import signing key
         run: |
-          echo -n ${{ secrets.APTLY_GPG_PRIVATE_KEY}} | base64 --decode | gpg --import
-          echo "default-key t.s.noble@outlook.com" > ~/.gnupg/options
+          echo -n ${{ secrets.APTLY_GPG_PRIVATE_KEY}} | base64 --decode | gpg1 --import
       - name: Publish new Snapshot
         run: |
-          gpg --list-secret-keys
           aptly repo create -distribution=jammy -component=main -config=.aptly.conf rivelin-source-dependencies
           aptly repo add -config=.aptly.conf rivelin-source-dependencies debs
           aptly snapshot create -config=.aptly.conf rivelin-source-dependencies-${{ github.event.inputs.version }} from repo rivelin-source-dependencies
