@@ -76,7 +76,7 @@ class AptlyS3PocStack(Stack):
                     ],
                     resources=[
                         repository.bucket_arn,
-                        repository.arn_for_objects(),
+                        f"{repository.bucket_arn}/*"
                     ]
                 )
             ],
