@@ -39,7 +39,7 @@ jobs:
       #     echo Region=${{ secrets.AWS_DEFAULT_REGION }} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
       - name: Import signing key
         run: |
-          base64 --decode ${{ secrets.APTLY_GPG_PRIVATE_KEY}} | gpg --import
+          echo -n ${{ secrets.APTLY_GPG_PRIVATE_KEY}} | base64 --decode | gpg --import
       - name: Publish new Snapshot
         run: |
           aptly repo create -distribution=jammy -component=main -config=.aptly.conf rivelin-source-dependencies
