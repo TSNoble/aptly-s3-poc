@@ -39,7 +39,6 @@ jobs:
       #     echo Region=${{ secrets.AWS_DEFAULT_REGION }} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
       - name: Import signing key
         run: |
-          echo "GPG_TTY=$(tty)" >> $GITHUB_ENV
           echo -n ${{ secrets.APTLY_GPG_PRIVATE_KEY}} | base64 --decode | gpg --import
       - name: Publish new Snapshot
         run: |
