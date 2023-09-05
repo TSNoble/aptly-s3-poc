@@ -54,11 +54,32 @@ class AptlyS3PocStack(Stack):
 
         repository.grant_read(read_only_role)
         
-        write_only_role = iam.Role(
+        publisher_role = iam.Role(
             scope=self,
-            id="AptlyRepositoryWriteOnlyRole",
+            id="AptlyRepositoryPublisherRole",
             assumed_by=github_principal,
             description="A role granting write-only access to the Aptly repository."
         )
 
-        repository.grant_write(write_only_role)
+        allow_publish_policy = iam.Policy(
+            scope=self,
+            id="AptlyRepositoryAllowPublishPolicy",
+            statements=[
+                iam.PolicyStatement(
+                    sid="AllowPublishToAptlyRepository",
+                    actions=[
+                        "s3:DeleteObject",
+                        "s3:GetObject",
+                        "s3:ListBucket",
+                        "s3:PutObject",
+                        "s3:PutObjectAcl",
+                    ],
+                    resources=[
+                        repository.bucket_arn,
+                        repository.arn_for_objects(),
+                    ]
+                )
+            ],
+        )
+
+        allow_publish_policy.attach_to_role(publisher_role)
