@@ -32,7 +32,7 @@ jobs:
       - name: Import signing key
         run: |
           echo -n ${{ secrets.APTLY_GPG_PRIVATE_KEY}} | base64 --decode | gpg --import
-          echo "default-key t.s.noble@outlook.com" > ~/.gnupg/gpg.conf
+          echo "default-key t.s.noble@outlook.com" > ~/.gnupg/options
       - name: Publish new Snapshot
         run: |
           aptly repo create -distribution=jammy -component=main -config=.aptly.conf rivelin-source-dependencies
