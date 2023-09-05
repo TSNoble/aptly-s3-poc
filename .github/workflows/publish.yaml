@@ -30,18 +30,16 @@ jobs:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           role-session-name: GithubRunnerAptlyPublish
           output-credentials: true
-      - name: Configure S3 apt transport
-        run: |
-          sudo touch /etc/apt/s3auth.conf
-          echo AccessKeyId=${{ steps.aws-credentials.outputs.aws-access-key-id}} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
-          echo SecretAccessKey=${{ steps.aws-credentials.outputs.aws-secret-access-key}} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
-          echo Token=${{ steps.aws-credentials.outputs.aws-session-token}} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
-          echo Region=${{ secrets.AWS_DEFAULT_REGION }} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
+      # - name: Configure S3 apt transport
+      #   run: |
+      #     sudo touch /etc/apt/s3auth.conf
+      #     echo AccessKeyId=${{ steps.aws-credentials.outputs.aws-access-key-id}} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
+      #     echo SecretAccessKey=${{ steps.aws-credentials.outputs.aws-secret-access-key}} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
+      #     echo Token=${{ steps.aws-credentials.outputs.aws-session-token}} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
+      #     echo Region=${{ secrets.AWS_DEFAULT_REGION }} | sudo dd of=/etc/apt/s3auth.conf oflag=append conv=notrunc
       - name: Import signing key
         run: |
-          mkdir /home/runner/.gnupg
-          touch /home/runner/.gnupg/pubring.gpg /home/runner/.gnupg/secring.gpg
-          echo -n ${{ secrets.APTLY_GPG_PRIVATE_KEY}} | base64 --decode | sudo apt-key add
+          echo -n ${{ secrets.APTLY_GPG_PRIVATE_KEY}} | base64 --decode | gpg --import
       - name: Publish new Snapshot
         run: |
           aptly repo create -distribution=jammy -component=main -config=.aptly.conf rivelin-source-dependencies
