@@ -11,6 +11,7 @@ jobs:
     env:
       AWS_GITHUB_PROVIDER_ARN: ${{ secrets.AWS_GITHUB_PROVIDER_ARN }}
     permissions:
+      repo: write
       id-token: write
       contents: read
     steps:
