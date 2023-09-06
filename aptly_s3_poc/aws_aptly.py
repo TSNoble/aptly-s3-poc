@@ -18,7 +18,7 @@ class AptlyRepository(Construct):
             encryption=s3.BucketEncryption.S3_MANAGED,
             removal_policy=RemovalPolicy.DESTROY
         )
-        super.__init__(AptlyRepository, scope, id)
+        super(AptlyRepository, self).__init__(scope, id)
 
     def grant_read(self, principal: iam.IGrantable):
         """ Grants a `principal` permission to read packages."""
