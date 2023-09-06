@@ -1,5 +1,6 @@
 from aws_cdk import (
     Stack,
+    CfnOutput,
     aws_iam as iam,
 )
 from constructs import Construct
@@ -17,6 +18,12 @@ class AptlyS3PocStack(Stack):
         repository = aptly.AptlyRepository(
             scope=self,
             id="AptlyRepository",
+        )
+
+        CfnOutput(
+            scope=self,
+            id="AptlyRepositoryBucketName",
+            value=f"s3:{repository.bucket.bucket_name}:.",
         )
 
         github_provider = iam.OpenIdConnectProvider.from_open_id_connect_provider_arn(
@@ -55,3 +62,10 @@ class AptlyS3PocStack(Stack):
         )
 
         repository.grant_publish(publisher_role)
+
+        CfnOutput(
+            scope=self,
+            id="AptlyRepositoryPublisherRoleArn",
+            value=publisher_role.role_arn,
+        )
+
