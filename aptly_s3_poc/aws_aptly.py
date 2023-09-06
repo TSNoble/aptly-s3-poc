@@ -12,7 +12,7 @@ class AptlyRepository(Construct):
     def __init__(self, scope: Construct, id: str):
         self.bucket = s3.Bucket(
             scope=self,
-            id=f"f{self.id}Bucket",
+            id=f"f{id}Bucket",
             auto_delete_objects=True,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             encryption=s3.BucketEncryption.S3_MANAGED,
