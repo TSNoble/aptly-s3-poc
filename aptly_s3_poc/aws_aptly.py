@@ -1,9 +1,10 @@
 from aws_cdk import (
-    Construct,
     RemovalPolicy,
     aws_s3 as s3,
     aws_iam as iam,
 )
+from constructs import Construct
+
 
 class AptlyRepository(Construct):
     """ An S3 Bucket which hosts apt packaged managed via Aptly."""
