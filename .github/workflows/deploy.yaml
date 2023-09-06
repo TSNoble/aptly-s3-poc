@@ -40,6 +40,7 @@ jobs:
       - name: Get CDK outputs
         id: cdk-outputs
         run: |
+          ls
           cat ./cdk-outputs.json
           echo "AWS_APTLY_REPOSITORY=$(cat cdk-outputs.json | jq -r .AptlyRepositoryBucketName)" >> $GITHUB_OUTPUT
           echo "AWS_APTLY_PUBLISH_ROLE_ARN=$(cat cdk-outputs.json | jq -r .AptlyRepositoryPublisherRoleArn)" >> $GITHUB_OUTPUT
