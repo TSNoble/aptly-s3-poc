@@ -37,7 +37,7 @@ jobs:
         run: cdk synth AptlyS3PocStack
       - name: Deploy stack
         run: |
-          cdk deploy --require-approval never AptlyS3PocStack --output-file ./cdk-outputs.json
+          cdk deploy --require-approval never AptlyS3PocStack --outputs-file ./cdk-outputs.json
           ls
           ls cdk.out
       - name: Get CDK outputs
