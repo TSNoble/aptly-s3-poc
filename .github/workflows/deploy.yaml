@@ -21,7 +21,10 @@ jobs:
         with:
           node-version: 18
       - name: Install dependencies
-        run: npm install -g aws-cdk && pip3 install -r requirements.txt
+        run: |
+          sudo apt-get install -y jq
+          npm install -g aws-cdk
+          pip3 install -r requirements.txt
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -33,4 +36,22 @@ jobs:
       - name: Synthesize stack
         run: cdk synth AptlyS3PocStack
       - name: Deploy stack
-        run: cdk deploy --require-approval never AptlyS3PocStack
+        run: cdk deploy --require-approval never AptlyS3PocStack --output-file ./cdk-outputs.json
+      - name: Get CDK outputs
+        id: cdk-outputs
+        run: |
+          cat ./cdk-outputs.json
+          echo "AWS_APTLY_REPOSITORY=$(cat cdk-outputs.json | jq -r .AptlyRepositoryBucketName)" >> $GITHUB_OUTPUT
+          echo "AWS_APTLY_PUBLISH_ROLE_ARN=$(cat cdk-outputs.json | jq -r .AptlyRepositoryPublisherRoleArn)" >> $GITHUB_OUTPUT
+      - name: Update Aptly repository secret
+        uses: gliech/create-github-secret-action@v1
+        with:
+          name: AWS_APTLY_REPOSITORY
+          value: ${{ steps.cdk-outputs.outputs.AWS_APTLY_REPOSITORY }}
+          pa_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update publish role secret
+        uses: gliech/create-github-secret-action@v1
+        with:
+          name: AWS_APTLY_PUBLISH_ROLE_ARN
+          value: ${{ steps.cdk-outputs.outputs.AWS_APTLY_PUBLISH_ROLE_ARN }}
+          pa_token: ${{ secrets.GITHUB_TOKEN }}
