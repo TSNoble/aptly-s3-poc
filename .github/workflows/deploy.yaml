@@ -36,11 +36,15 @@ jobs:
       - name: Synthesize stack
         run: cdk synth AptlyS3PocStack
       - name: Deploy stack
-        run: cdk deploy --require-approval never AptlyS3PocStack --output-file ./cdk-outputs.json
+        run: |
+          cdk deploy --require-approval never AptlyS3PocStack --output-file ./cdk-outputs.json
+          ls
+          ls cdk.out
       - name: Get CDK outputs
         id: cdk-outputs
         run: |
           ls
+          ls cdk.out
           cat ./cdk-outputs.json
           echo "AWS_APTLY_REPOSITORY=$(cat cdk-outputs.json | jq -r .AptlyRepositoryBucketName)" >> $GITHUB_OUTPUT
           echo "AWS_APTLY_PUBLISH_ROLE_ARN=$(cat cdk-outputs.json | jq -r .AptlyRepositoryPublisherRoleArn)" >> $GITHUB_OUTPUT
