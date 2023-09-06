@@ -16,7 +16,7 @@ class AptlyS3PocStack(Stack):
 
         repository = aptly.AptlyRepository(
             scope=self,
-            id="AptlyRepository"
+            id="AptlyRepository",
         )
 
         github_provider = iam.OpenIdConnectProvider.from_open_id_connect_provider_arn(
@@ -28,7 +28,7 @@ class AptlyS3PocStack(Stack):
         github_principal = github.GitHubOIDCPrincipal(
             provider=github_provider,
             repository="TSNoble/aptly-s3-poc",
-            environment="Publish"
+            environment="Publish",
         )
 
         read_only_group = iam.Group(
