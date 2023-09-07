@@ -38,8 +38,10 @@ class AptlyRepository(Construct):
         )
 
         s3_deploy.SingleFileBucketDeployment(
+            scope=self,
+            id=f"{id}KeyBucketIndexDeployment",
             destination_bucket=self.key_bucket,
-            file=Path.cwd().absolute() / "index.html"
+            file=Path.cwd().absolute() / "index.html",
         )
 
     def grant_read(self, principal: iam.IGrantable):
