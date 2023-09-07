@@ -35,6 +35,7 @@ class AptlyRepository(Construct):
             access_control=s3.BucketAccessControl.PUBLIC_READ,
             block_public_access=s3.BlockPublicAccess(
                 block_public_acls=False,
+                block_public_policy=False,
                 ignore_public_acls=False,
                 restrict_public_buckets=False,
             ),
