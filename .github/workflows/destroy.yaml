@@ -1,11 +1,11 @@
 ---
-name: Deploy Infrastructure
+name: Destroy Infrastructure
 
 on:
   workflow_dispatch
 
 jobs:
-  Deploy:
+  Destroy:
     runs-on: ubuntu-latest
     environment: Deployment
     env:

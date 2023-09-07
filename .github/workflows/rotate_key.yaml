@@ -5,7 +5,7 @@ on:
   workflow_dispatch
 
 jobs:
-  Deploy:
+  Rotate:
     runs-on: ubuntu-latest
     environment: KeyRotation
     permissions:
