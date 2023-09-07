@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from aws_cdk import (
     RemovalPolicy,
     aws_s3 as s3,
@@ -5,6 +7,9 @@ from aws_cdk import (
 )
 from constructs import Construct
 
+from aptly_s3_poc import (
+    aws_s3_deployment as s3_deploy,
+)
 
 class AptlyRepository(Construct):
     """ An pair S3 Buckets which host apt packages managed via Aptly, and the public signing key."""
@@ -20,6 +25,7 @@ class AptlyRepository(Construct):
             enforce_ssl=True,
             removal_policy=RemovalPolicy.DESTROY,
         )
+
         self.key_bucket = s3.Bucket(
             scope=self,
             id=f"{id}KeyBucket",
@@ -29,6 +35,11 @@ class AptlyRepository(Construct):
             encryption=s3.BucketEncryption.S3_MANAGED,
             enforce_ssl=True,
             removal_policy=RemovalPolicy.DESTROY,
+        )
+
+        s3_deploy.SingleFileBucketDeployment(
+            destination_bucket=self.key_bucket,
+            file=Path.cwd().absolute() / "index.html"
         )
 
     def grant_read(self, principal: iam.IGrantable):
