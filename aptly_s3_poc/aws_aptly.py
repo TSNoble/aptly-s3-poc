@@ -33,6 +33,11 @@ class AptlyRepository(Construct):
             auto_delete_objects=True,
             public_read_access=True,
             access_control=s3.BucketAccessControl.PUBLIC_READ,
+            block_public_access=s3.BlockPublicAccess(
+                block_public_acls=False,
+                ignore_public_acls=False,
+                restrict_public_buckets=False,
+            )
             removal_policy=RemovalPolicy.DESTROY,
         )
 
