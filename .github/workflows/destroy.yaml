@@ -1,5 +1,5 @@
 ---
-name: Deploy to AWS
+name: Deploy Infrastructure
 
 on:
   workflow_dispatch
@@ -29,10 +29,6 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOYMENT_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-          role-session-name: GithubRunnerDeployment
-      - name: Bootstrap environment
-        run: cdk bootstrap
-      - name: Synthesize stack
-        run: cdk synth AptlyS3PocStack
-      - name: Deploy stack
-        run: cdk deploy --require-approval never AptlyS3PocStack
+          role-session-name: GithubRunneTeardown
+      - name: Destroy stack
+        run: cdk destroy --require-approval never AptlyS3PocStack
