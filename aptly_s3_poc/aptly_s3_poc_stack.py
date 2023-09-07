@@ -22,8 +22,14 @@ class AptlyS3PocStack(Stack):
 
         CfnOutput(
             scope=self,
-            id="AptlyRepositoryBucketName",
-            value=f"s3:{repository.bucket.bucket_name}:.",
+            id="AptlyRepositoryPackageBucketName",
+            value=repository.package_bucket.bucket_name,
+        )
+
+        CfnOutput(
+            scope=self,
+            id="AptlyRepositoryKeyBucketName",
+            value=repository.key_bucket.bucket_name,
         )
 
         github_provider = iam.OpenIdConnectProvider.from_open_id_connect_provider_arn(
