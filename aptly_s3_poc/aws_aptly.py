@@ -37,7 +37,7 @@ class AptlyRepository(Construct):
                 block_public_acls=False,
                 ignore_public_acls=False,
                 restrict_public_buckets=False,
-            )
+            ),
             removal_policy=RemovalPolicy.DESTROY,
         )
 
