@@ -72,7 +72,7 @@ class AptlyRepository(Construct):
                 "s3:DeleteObject",
                 "s3:ListBucket",
                 "s3:PutObject",
-            ]
+            ],
             resources=[
                 f"{self.key_bucket.bucket_arn}/public.pgp",
             ]
