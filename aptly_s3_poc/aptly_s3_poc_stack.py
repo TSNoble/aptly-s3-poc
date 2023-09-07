@@ -69,9 +69,23 @@ class AptlyS3PocStack(Stack):
 
         repository.grant_publish(publisher_role)
 
+        key_manager_role = iam.Role(
+            scope=self,
+            id="AptlyRepositoryKeyManagerRole",
+            assumed_by=github_principal,
+            description="A role granting signing key update permissions to the Aptly repository."
+        )
+
         CfnOutput(
             scope=self,
             id="AptlyRepositoryPublisherRoleArn",
             value=publisher_role.role_arn,
         )
 
+        repository.grant_update_key(key_manager_role)
+
+        CfnOutput(
+            scope=self,
+            id="AptlyRepositoryKeyManagerRoleArn",
+            value=key_manager_role.role_arn,
+        )

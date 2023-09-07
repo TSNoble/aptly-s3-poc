@@ -66,3 +66,18 @@ class AptlyRepository(Construct):
             ]
         )
         principal.add_to_policy(allow_publish)
+
+    def grant_update_key(self, principal: iam.IGrantable):
+        """ Grants a `principal` permission to update the signing key."""
+        allow_update_key = iam.PolicyStatement(
+            sid="AllowUpdateAptlySigningKey",
+            actions=[
+                "s3:DeleteObject",
+                "s3:ListBucket",
+                "s3:PutObject",
+            ]
+            resources=[
+                f"{self.key_bucket.bucket_arn}/public.pgp",
+            ]
+        )
+        principal.add_to_policy(allow_update_key)
