@@ -18,7 +18,7 @@ class AptlyRepository(Construct):
         super(AptlyRepository, self).__init__(scope, id)
         self.package_bucket = s3.Bucket(
             scope=self,
-            id=f"{id}PackageBucket",
+            id=f"PackageBucket",
             auto_delete_objects=True,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             encryption=s3.BucketEncryption.S3_MANAGED,
@@ -28,28 +28,25 @@ class AptlyRepository(Construct):
 
         self.key_bucket = s3.Bucket(
             scope=self,
-            id=f"{id}KeyBucket",
+            id=f"KeyBucket",
             website_index_document="index.html",
             auto_delete_objects=True,
-            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
-            encryption=s3.BucketEncryption.S3_MANAGED,
-            enforce_ssl=True,
+            access_control=s3.BucketAccessControl.PUBLIC_READ,
             removal_policy=RemovalPolicy.DESTROY,
         )
 
         s3_deploy.SingleFileBucketDeployment(
             scope=self,
-            id=f"{id}KeyBucketIndexDeployment",
+            id=f"KeyBucketIndexDeployment",
             destination_bucket=self.key_bucket,
             file=Path.cwd().absolute() / "index.html",
         )
 
-    def grant_read(self, principal: iam.IGrantable):
+    def grant_read_package(self, principal: iam.IGrantable):
         """ Grants a `principal` permission to read packages."""
         self.package_bucket.grant_read(principal)
-        self.key_bucket.grant_read(principal)
     
-    def grant_publish(self, principal: iam.IGrantable):
+    def grant_publish_package(self, principal: iam.IGrantable):
         """ Grants a `principal` permission to publish packages."""
         allow_publish = iam.PolicyStatement(
             sid="AllowPublishToAptlyRepository",

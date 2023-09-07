@@ -49,7 +49,7 @@ class AptlyS3PocStack(Stack):
             id="AptlyRepositoryReadOnlyGroup",
         )
 
-        repository.grant_read(read_only_group)
+        repository.grant_read_package(read_only_group)
 
         read_only_role = iam.Role(
             scope=self,
@@ -58,7 +58,7 @@ class AptlyS3PocStack(Stack):
             description="A role granting read-only access to the Aptly repository."
         )
 
-        repository.grant_read(read_only_role)
+        repository.grant_read_package(read_only_role)
         
         publisher_role = iam.Role(
             scope=self,
@@ -67,7 +67,7 @@ class AptlyS3PocStack(Stack):
             description="A role granting write-only access to the Aptly repository."
         )
 
-        repository.grant_publish(publisher_role)
+        repository.grant_publish_package(publisher_role)
 
         key_manager_role = iam.Role(
             scope=self,
