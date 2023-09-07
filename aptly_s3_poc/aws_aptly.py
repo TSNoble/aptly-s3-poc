@@ -18,7 +18,7 @@ class AptlyRepository(Construct):
         super(AptlyRepository, self).__init__(scope, id)
         self.package_bucket = s3.Bucket(
             scope=self,
-            id=f"{id}Bucket",
+            id=f"{id}PackageBucket",
             auto_delete_objects=True,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             encryption=s3.BucketEncryption.S3_MANAGED,
