@@ -23,7 +23,7 @@ class AptlyRepository(Construct):
         self.key_bucket = s3.Bucket(
             scope=self,
             id=f"{id}KeyBucket",
-            website_index_document="",
+            website_index_document="index.html",
             auto_delete_objects=True,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             encryption=s3.BucketEncryption.S3_MANAGED,
