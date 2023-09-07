@@ -9,7 +9,7 @@ class SingleFileBucketDeployment(s3_deploy.BucketDeployment):
 
     def __init__(self, file: Path, *args, **kwargs):
         file_asset = s3_deploy.Source.asset(
-            path=file.parent,
+            path=str(file.parent),
             exclude=["**", f"!{file.name}"],
         )
         super(SingleFileBucketDeployment, self).__init__(
