@@ -39,6 +39,6 @@ jobs:
           name: 'Foo'
           value: 'Lorem ipsun dolor simit'
           repository: 'TSNoble/aptly-s3-poc'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.REPOSITORY_PAT }}
           environment: 'Deployment'
 
