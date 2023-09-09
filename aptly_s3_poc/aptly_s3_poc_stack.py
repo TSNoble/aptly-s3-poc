@@ -63,7 +63,7 @@ class AptlyS3PocStack(Stack):
         publisher_role = iam.Role(
             scope=self,
             id="AptlyRepositoryPublisherRole",
-            assumed_by=github_principal,
+            assumed_by=github_publisher_principal,
             description="A role granting write-only access to the Aptly repository."
         )
 
