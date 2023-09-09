@@ -38,7 +38,7 @@ class AptlyS3PocStack(Stack):
             open_id_connect_provider_arn=github_provider_arn,
         )
 
-        github_principal = github.GitHubOIDCPrincipal(
+        github_publisher_principal = github.GitHubOIDCPrincipal(
             provider=github_provider,
             repository="TSNoble/aptly-s3-poc",
             environment="Publish",
@@ -54,7 +54,7 @@ class AptlyS3PocStack(Stack):
         read_only_role = iam.Role(
             scope=self,
             id="AptlyRepositoryReadOnlyRole",
-            assumed_by=github_principal,
+            assumed_by=github_publisher_principal,
             description="A role granting read-only access to the Aptly repository."
         )
 
@@ -69,10 +69,16 @@ class AptlyS3PocStack(Stack):
 
         repository.grant_publish_package(publisher_role)
 
+        github_key_manager_principal = github.GitHubOIDCPrincipal(
+            provider=github_provider,
+            repository="TSNoble/aptly-s3-poc",
+            environment="KeyRotation",
+        )
+
         key_manager_role = iam.Role(
             scope=self,
             id="AptlyRepositoryKeyManagerRole",
-            assumed_by=github_principal,
+            assumed_by=github_key_manager_principal,
             description="A role granting signing key update permissions to the Aptly repository."
         )
 
