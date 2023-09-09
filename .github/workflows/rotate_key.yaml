@@ -32,6 +32,12 @@ jobs:
         run: |
           gpg1 --output /tmp/public.pgp --armor --export rivelinrobotics@gmail.com
           aws s3 cp /tmp/public.pgp s3://${{ secrets.AWS_APTLY_KEY_BUCKET_ARN }} 
-      # TODO: Update private key secret
-
+      - name: Update private key secret
+        uses: mmercan/actions-set-secret@v/4.0.0
+        with:
+          name: 'Foo'
+          value: 'Lorem ipsun dolor simit'
+          repository: 'TSNoble/aptly-s3-poc'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: 'Deployment'
 
