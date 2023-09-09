@@ -31,17 +31,17 @@ jobs:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           role-session-name: GithubRunnerKeyRotation
       - name: Delete old public key
-        run: aws s3 rm s3://${{ secrets.AWS_APTLY_KEY_BUCKET_ARN }}/public.pgp
+        run: aws s3 rm s3://${{ secrets.AWS_APTLY_KEY_BUCKET_NAME }}/public.pgp
       - name: Upload new public key
         run: |
           gpg1 --output /tmp/public.pgp --armor --export rivelinrobotics@gmail.com
-          aws s3 cp /tmp/public.pgp s3://${{ secrets.AWS_APTLY_KEY_BUCKET_ARN }}
+          aws s3 cp /tmp/public.pgp s3://${{ secrets.AWS_APTLY_KEY_BUCKET_NAME }}
       - name: Update private key
         uses: mmercan/actions-set-secret@v/4.0.0
         with:
           name: APTLY_GPG_PRIVATE_KEY
           value: £{{ steps.gpg.outputs.APTLY_GPG_PRIVATE_KEY }}
           repository: TSNoble/aptly-s3-poc
-          token: ${{ secrets.GITHUB_PAT }}
+          token: ${{ secrets.REPOSITORY_PAT }}
           environment: Publish
 
