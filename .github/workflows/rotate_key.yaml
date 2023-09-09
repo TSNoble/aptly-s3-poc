@@ -17,7 +17,9 @@ jobs:
           sudo apt-get install -y gpgv1 gnupg1
           pip install awscli
       - name: Generate signing key pair
-        run: gpg1 --batch --gen-key ./keygen.conf
+        run: |
+          ls
+          gpg1 --batch --gen-key keygen.conf
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
