@@ -39,7 +39,7 @@ jobs:
         uses: mmercan/actions-set-secret@v/4.0.0
         with:
           name: APTLY_GPG_PRIVATE_KEY
-          value: £{{ steps.gpg.outputs.APTLY_GPG_PRIVATE_KEY }}
+          value: ${{ steps.gpg.outputs.APTLY_GPG_PRIVATE_KEY }}
           repository: TSNoble/aptly-s3-poc
           token: ${{ secrets.REPOSITORY_PAT }}
           environment: Publish
