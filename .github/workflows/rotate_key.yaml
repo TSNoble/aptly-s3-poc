@@ -28,7 +28,7 @@ jobs:
         run: aws s3 rm s3://${{ secrets.AWS_APTLY_KEY_BUCKET_ARN }}/public.pgp
       - name: Upload new public key
         run: |
-          gpgv1 --armor --output /tmp/public.pgp --export RivelinRobotics
+          gpgv1 --output /tmp/public.pgp --armor --export RivelinRobotics
           aws s3 cp /tmp/public.pgp s3:///${{ secrets.AWS_APTLY_KEY_BUCKET_ARN }} 
       # TODO: Update private key secret
 
