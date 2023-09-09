@@ -22,6 +22,7 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: |
+          sudo apt-get install -y jq
           npm install -g aws-cdk
           pip3 install -r requirements.txt
       - name: Configure AWS credentials
@@ -35,4 +36,44 @@ jobs:
       - name: Synthesize stack
         run: cdk synth AptlyS3PocStack
       - name: Deploy stack
-        run: cdk deploy --require-approval never AptlyS3PocStack
+        run: cdk deploy --require-approval never AptlyS3PocStack --outputs-file /tmp/cdk-outputs.json
+      - name: Export CDK outputs
+        id: cdk
+        run: |
+          echo "AWS_APTLY_PACKAGE_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryPackageBucketName)" >> $GITHUB_OUTPUTS
+          echo "AWS_APTLY_KEY_BUCKET_NAME"=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryKeyBucketName)" >> $GITHUB_OUTPUTS
+          echo "AWS_APTLY_PUBLISHER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryPublisherRoleArn)" >> $GITHUB_OUTPUTS
+          echo "AWS_APTLY_PUBLISHER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryKeyManagerRoleArn)" >> $GITHUB_OUTPUTS
+      - name: Update package bucket secret (Publish)
+        uses: mmercan/actions-set-secret@v/4.0.0
+        with:
+          name: AWS_APTLY_PAKCAGE_BUCKET_NAME
+          value: ${{ steps.cdk.outputs.AWS_APTLY_PACKAGE_BUCKET_NAME }}
+          repository: TSNoble/aptly-s3-poc
+          token: ${{ secrets.REPOSITORY_PAT }}
+          environment: Publish
+      - name: Update publisher role secret (Publish)
+        uses: mmercan/actions-set-secret@v/4.0.0
+        with:
+          name: AWS_APTLY_PUBLISHER_ROLE_ARN
+          value: ${{ steps.cdk.outputs.AWS_APTLY_PUBLISHER_ROLE_ARN }}
+          repository: TSNoble/aptly-s3-poc
+          token: ${{ secrets.REPOSITORY_PAT }}
+          environment: Publish
+            - name: Update private key
+      - name: Update key bucket secret (KeyRotation)
+        uses: mmercan/actions-set-secret@v/4.0.0
+        with:
+          name: AWS_APTLY_KEY_BUCKET_NAME
+          value: ${{ steps.cdk.outputs.AWS_APTLY_KEY_BUCKET_NAME }}
+          repository: TSNoble/aptly-s3-poc
+          token: ${{ secrets.REPOSITORY_PAT }}
+          environment: KeyRotation
+      - name: Update key manager role secret (KeyRotation)
+        uses: mmercan/actions-set-secret@v/4.0.0
+        with:
+          name: AWS_APTLY_KEY_MANAGER_ROLE_ARN
+          value: ${{ steps.cdk.outputs.AWS_APTLY_KEY_MANAGER_ROLE_ARN }}
+          repository: TSNoble/aptly-s3-poc
+          token: ${{ secrets.REPOSITORY_PAT }}
+          environment: KeyRotation

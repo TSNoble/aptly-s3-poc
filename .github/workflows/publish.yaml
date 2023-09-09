@@ -26,15 +26,15 @@ jobs:
         id: aws-credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          role-to-assume: ${{ secrets.AWS_APTLY_PUBLISH_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_APTLY_PUBLISHER_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-          role-session-name: GithubRunnerAptlyPublish
+          role-session-name: GithubRunnerAptlyPublishSnapshot
       - name: Import signing key
         run: |
-          echo -n ${{ secrets.APTLY_GPG_PRIVATE_KEY}} | base64 --decode | gpg1 --import
+          echo -n ${{ secrets.APTLY_GPG_PRIVATE_KEY }} | base64 --decode | gpg1 --import
       - name: Publish new Snapshot
         run: |
           aptly repo create -distribution=jammy -component=main -config=.aptly.conf rivelin-source-dependencies
           aptly repo add -config=.aptly.conf rivelin-source-dependencies debs
           aptly snapshot create -config=.aptly.conf rivelin-source-dependencies-${{ github.event.inputs.version }} from repo rivelin-source-dependencies
-          aptly -architectures=i386 publish snapshot -config=.aptly.conf rivelin-source-dependencies-${{ github.event.inputs.version }} ${{ secrets.AWS_APTLY_REPOSITORY }}
+          aptly -architectures=i386 publish snapshot -config=.aptly.conf rivelin-source-dependencies-${{ github.event.inputs.version }} s3:${{ secrets.AWS_APTLY_PACKAGE_BUCKET_NAME }}:

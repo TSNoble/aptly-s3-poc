@@ -28,8 +28,8 @@ class AptlyS3PocStack(Stack):
 
         CfnOutput(
             scope=self,
-            id="AptlyRepositoryPublicKeyUrl",
-            value=f"{repository.key_bucket.bucket_website_domain_name}/public.pgp",
+            id="AptlyRepositoryKeyBucketName",
+            value=repository.key_bucket.bucket_name,
         )
 
         github_provider = iam.OpenIdConnectProvider.from_open_id_connect_provider_arn(
