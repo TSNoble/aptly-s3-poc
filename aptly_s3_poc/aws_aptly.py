@@ -31,14 +31,9 @@ class AptlyRepository(Construct):
             id=f"KeyBucket",
             website_index_document="index.html",
             auto_delete_objects=True,
-            public_read_access=True,
-            access_control=s3.BucketAccessControl.PUBLIC_READ,
-            block_public_access=s3.BlockPublicAccess(
-                block_public_acls=False,
-                block_public_policy=False,
-                ignore_public_acls=False,
-                restrict_public_buckets=False,
-            ),
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            encryption=s3.BucketEncryption.S3_MANAGED,
+            enforce_ssl=True,
             removal_policy=RemovalPolicy.DESTROY,
         )
 
