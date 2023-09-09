@@ -20,7 +20,9 @@ jobs:
           sudo apt-get install -y gpgv1 gnupg1
           pip install awscli
       - name: Generate signing key pair
-        run: gpg1 --batch --gen-key keygen.conf
+        run: |
+          gpg1 --batch --gen-key keygen.conf
+          echo "APTLY_GPG_PRIVATE_KEY=$(gpg1 --armor --export-secret-key rivelinrobotics@gmail.com | base64 -w 0)" >> $GITHUB_ENV
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -32,13 +34,13 @@ jobs:
       - name: Upload new public key
         run: |
           gpg1 --output /tmp/public.pgp --armor --export rivelinrobotics@gmail.com
-          aws s3 cp /tmp/public.pgp s3://${{ secrets.AWS_APTLY_KEY_BUCKET_ARN }} 
-      - name: Update private key secret
+          aws s3 cp /tmp/public.pgp s3://${{ secrets.AWS_APTLY_KEY_BUCKET_ARN }}
+      - name: Update private key
         uses: mmercan/actions-set-secret@v/4.0.0
         with:
           name: 'Foo'
           value: 'Lorem ipsun dolor simit'
           repository: 'TSNoble/aptly-s3-poc'
-          token: ${{ secrets.REPOSITORY_PAT }}
+          token: ${{ secrets.GITHUB_PAT }}
           environment: 'Deployment'
 
