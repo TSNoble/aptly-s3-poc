@@ -60,7 +60,6 @@ jobs:
           repository: TSNoble/aptly-s3-poc
           token: ${{ secrets.REPOSITORY_PAT }}
           environment: Publish
-            - name: Update private key
       - name: Update key bucket secret (KeyRotation)
         uses: mmercan/actions-set-secret@v/4.0.0
         with:
