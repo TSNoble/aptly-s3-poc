@@ -41,7 +41,7 @@ jobs:
         id: cdk
         run: |
           echo "AWS_APTLY_PACKAGE_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryPackageBucketName)" >> $GITHUB_OUTPUT
-          echo "AWS_APTLY_KEY_BUCKET_NAME"=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryKeyBucketName)" >> $GITHUB_OUTPUT
+          echo "AWS_APTLY_KEY_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryKeyBucketName)" >> $GITHUB_OUTPUT
           echo "AWS_APTLY_PUBLISHER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryPublisherRoleArn)" >> $GITHUB_OUTPUT
           echo "AWS_APTLY_KEY_MANAGER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryKeyManagerRoleArn)" >> $GITHUB_OUTPUT
       - name: Update package bucket secret (Publish)
