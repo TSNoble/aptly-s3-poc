@@ -36,11 +36,9 @@ jobs:
           gpg1 --output /tmp/public.pgp --armor --export rivelinrobotics@gmail.com
           aws s3 cp /tmp/public.pgp s3://${{ secrets.AWS_APTLY_KEY_BUCKET_NAME }}
       - name: Update private key
-        uses: mmercan/actions-set-secret@v/4.0.0
+        uses: gliech/create-github-secret-action@v1
         with:
+          location: TSNoble/aptly-s3-poc/environments/Publish
           name: APTLY_GPG_PRIVATE_KEY
           value: ${{ steps.gpg.outputs.APTLY_GPG_PRIVATE_KEY }}
-          repository: TSNoble/aptly-s3-poc
-          token: ${{ secrets.REPOSITORY_PAT }}
-          environment: Publish
-
+          pa_token: ${{ secrets.REPOSITORY_PAT }}
