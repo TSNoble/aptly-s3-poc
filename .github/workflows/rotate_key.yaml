@@ -26,7 +26,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          role-to-assume: ${{ secrets.AWS_APTLY_KEY_WRITER_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_APTLY_KEY_MANAGER_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           role-session-name: GithubRunnerKeyRotation
       - name: Delete old public key
