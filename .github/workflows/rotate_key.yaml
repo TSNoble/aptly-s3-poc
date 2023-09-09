@@ -18,6 +18,7 @@ jobs:
           pip install awscli
       - name: Generate signing key pair
         run: |
+          pwd
           ls
           gpg1 --batch --gen-key keygen.conf
       - name: Configure AWS credentials
