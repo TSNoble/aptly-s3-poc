@@ -45,6 +45,7 @@ jobs:
           echo "AWS_APTLY_KEY_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyS3PocStack.AptlyRepositoryKeyBucketName)" >> $GITHUB_OUTPUT
           echo "AWS_APTLY_PUBLISHER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyS3PocStack.AptlyRepositoryPublisherRoleArn)" >> $GITHUB_OUTPUT
           echo "AWS_APTLY_KEY_MANAGER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyS3PocStack.AptlyRepositoryKeyManagerRoleArn)" >> $GITHUB_OUTPUT
+          echo $AWS_APTLY_KEY_MANAGER_ROLE_ARN
       - name: Update package bucket secret (Publish)
         uses: mmercan/actions-set-secret@v/4.0.0
         with:
