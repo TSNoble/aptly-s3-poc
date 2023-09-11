@@ -48,17 +48,17 @@ jobs:
           echo "AWS_APTLY_KEY_MANAGER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyS3PocStack.AptlyRepositoryKeyManagerRoleArn)" >> $GITHUB_OUTPUT
       - name: Update key bucket secret
         run: >
-          invoke create-github-secret \
-          --repo ${{ github.repository_id }} \
-          --environment KeyRotation \
-          --token ${{ secrets.REPOSITORY_PAT }} \
-          --name AWS_APTLY_KEY_BUCKET_NAME \
+          invoke create-github-secret
+          --repo ${{ github.repository_id }}
+          --environment KeyRotation
+          --token ${{ secrets.REPOSITORY_PAT }}
+          --name AWS_APTLY_KEY_BUCKET_NAME
           --value ${{ steps.cdk.outputs.AWS_APTLY_KEY_BUCKET_NAME }}
       - name: Update key manager role secret
         run: >
-          invoke create-github-secret \
-          --repo ${{ github.repository_id }} \
-          --environment KeyRotation \
-          --token ${{ secrets.REPOSITORY_PAT }} \
-          --name AWS_APTLY_KEY_MANAGER_ROLE_ARN \
+          invoke create-github-secret
+          --repo ${{ github.repository_id }}
+          --environment KeyRotation
+          --token ${{ secrets.REPOSITORY_PAT }}
+          --name AWS_APTLY_KEY_MANAGER_ROLE_ARN
           --value ${{ steps.cdk.outputs.AWS_APTLY_KEY_MANAGER_ROLE_ARN }}
