@@ -41,7 +41,7 @@ class AptlyRepository(Construct):
             scope=self,
             id=f"KeyBucketIndexDeployment",
             destination_bucket=self.key_bucket,
-            file=Path.cwd().absolute() / "index.html",
+            file=Path.cwd().absolute() / "config/index.html",
         )
 
     def grant_read_package(self, principal: iam.IGrantable):

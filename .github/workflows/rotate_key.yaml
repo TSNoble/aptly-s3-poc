@@ -21,7 +21,7 @@ jobs:
       - name: Generate signing key pair
         id: gpg
         run: |
-          gpg1 --batch --gen-key keygen.conf
+          gpg1 --batch --gen-key ./config/keygen.conf
           echo "APTLY_GPG_PRIVATE_KEY=$(gpg1 --armor --export-secret-key rivelinrobotics@gmail.com | base64 -w 0)" >> $GITHUB_OUTPUT
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3

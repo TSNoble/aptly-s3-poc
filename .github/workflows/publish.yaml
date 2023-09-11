@@ -22,6 +22,13 @@ jobs:
           echo "deb http://repo.aptly.info/ squeeze main" | sudo dd of=/etc/apt/sources.list.d/aptly.list
           sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EE727D4449467F0E
           sudo apt-get update && sudo apt-get install -y aptly gpgv1 gnupg1
+          pip3 install -r requirements-dev.txt
+      - name: Generate Aptly config
+        run: >
+          jinja2 ./templates/.aptly.conf.j2
+          -D region=${{ secrets.AWS_DEFAULT_REGION }}
+          -D bucket=${{ secrets.AWS_APTLY_PACKAGE_BUCKET_NAME }}
+          -o /tmp/.aptly.conf
       - name: Configure AWS credentials
         id: aws-credentials
         uses: aws-actions/configure-aws-credentials@v3
@@ -34,7 +41,7 @@ jobs:
           echo -n ${{ secrets.APTLY_GPG_PRIVATE_KEY }} | base64 --decode | gpg1 --import
       - name: Publish new Snapshot
         run: |
-          aptly repo create -distribution=jammy -component=main -config=.aptly.conf rivelin-source-dependencies
-          aptly repo add -config=.aptly.conf rivelin-source-dependencies debs
-          aptly snapshot create -config=.aptly.conf rivelin-source-dependencies-${{ github.event.inputs.version }} from repo rivelin-source-dependencies
-          aptly -architectures=i386 publish snapshot -config=.aptly.conf rivelin-source-dependencies-${{ github.event.inputs.version }} s3:${{ secrets.AWS_APTLY_PACKAGE_BUCKET_NAME }}:
+          aptly repo create -distribution=jammy -component=main -config=/tmp/.aptly.conf rivelin-source-dependencies
+          aptly repo add -config=/tmp/.aptly.conf rivelin-source-dependencies debs
+          aptly snapshot create -config=/tmp/.aptly.conf rivelin-source-dependencies-${{ github.event.inputs.version }} from repo rivelin-source-dependencies
+          aptly -architectures=i386 publish snapshot -config=/tmp/.aptly.conf rivelin-source-dependencies-${{ github.event.inputs.version }} s3:${{ secrets.AWS_APTLY_PACKAGE_BUCKET_NAME }}:

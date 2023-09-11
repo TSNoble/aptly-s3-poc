@@ -5,7 +5,7 @@ from aws_cdk import (
 )
 from constructs import Construct
 
-from aptly_s3_poc import (
+from aptly_s3_poc.constructs import (
     aws_aptly as aptly,
     aws_github as github
 )
