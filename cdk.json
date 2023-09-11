@@ -6,9 +6,8 @@
     ],
     "exclude": [
       "README.md",
-      "cdk*.json",
+      "config/cdk*.json",
       "requirements*.txt",
-      "source.bat",
       "**/__init__.py",
       "python/__pycache__",
       "tests"
