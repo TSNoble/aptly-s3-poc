@@ -24,7 +24,7 @@ jobs:
         run: |
           sudo apt-get install -y jq
           npm install -g aws-cdk
-          pip3 install -r requirements.txt
+          pip3 install -r requirements.txt requirements-dev.txt
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -45,12 +45,19 @@ jobs:
           echo "AWS_APTLY_KEY_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyS3PocStack.AptlyRepositoryKeyBucketName)" >> $GITHUB_OUTPUT
           echo "AWS_APTLY_PUBLISHER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyS3PocStack.AptlyRepositoryPublisherRoleArn)" >> $GITHUB_OUTPUT
           echo "AWS_APTLY_KEY_MANAGER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyS3PocStack.AptlyRepositoryKeyManagerRoleArn)" >> $GITHUB_OUTPUT
-      - name: Update key manager role variable
+      - name: Update key bucket secret
         run: >
-          curl -L
-          -X POST
-          -H "Accept: application/vnd.github+json"
-          -H "Authorization: token ${{ secrets.REPOSITORY_PAT }}"
-          -H "X-GitHub-Api-Version: 2022-11-28"
-          https://api.github.com/repositories/684518510/environments/KeyRotation/variables
-          -d '{"name":"AWS_APTLY_KEY_MANAGER_ROLE_ARN","value":"${{ steps.cdk.outputs.AWS_APTLY_KEY_MANAGER_ROLE_ARN }}"}'
+          invoke create-github-secret \
+          --repo ${{ github.repository_id }} \
+          --environment KeyRotation \
+          --token ${{ secrets.REPOSITORY_PAT }} \
+          --name AWS_APTLY_KEY_BUCKET_NAME \
+          --value ${{ steps.cdk.outputs.AWS_APTLY_KEY_BUCKET_NAME }}
+      - name: Update key manager role secret
+        run: >
+          invoke create-github-secret \
+          --repo ${{ github.repository_id }} \
+          --environment KeyRotation \
+          --token ${{ secrets.REPOSITORY_PAT }} \
+          --name AWS_APTLY_KEY_MANAGER_ROLE_ARN \
+          --value ${{ steps.cdk.outputs.AWS_APTLY_KEY_MANAGER_ROLE_ARN }}
