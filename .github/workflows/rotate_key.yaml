@@ -23,6 +23,7 @@ jobs:
         run: |
           gpg1 --batch --gen-key keygen.conf
           echo "APTLY_GPG_PRIVATE_KEY=$(gpg1 --armor --export-secret-key rivelinrobotics@gmail.com | base64 -w 0)" >> $GITHUB_OUTPUT
+          echo ${{ secrets.AWS_APTLY_KEY_MANAGER_ROLE_ARN }} | wc -c
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
