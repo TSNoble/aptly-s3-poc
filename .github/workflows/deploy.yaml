@@ -41,10 +41,10 @@ jobs:
         id: cdk
         run: |
           cat /tmp/cdk-outputs.json
-          echo "AWS_APTLY_PACKAGE_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryPackageBucketName)" >> $GITHUB_OUTPUT
-          echo "AWS_APTLY_KEY_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryKeyBucketName)" >> $GITHUB_OUTPUT
-          echo "AWS_APTLY_PUBLISHER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryPublisherRoleArn)" >> $GITHUB_OUTPUT
-          echo "AWS_APTLY_KEY_MANAGER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryKeyManagerRoleArn)" >> $GITHUB_OUTPUT
+          echo "AWS_APTLY_PACKAGE_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyS3PocStack.AptlyRepositoryPackageBucketName)" >> $GITHUB_OUTPUT
+          echo "AWS_APTLY_KEY_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyS3PocStack.AptlyRepositoryKeyBucketName)" >> $GITHUB_OUTPUT
+          echo "AWS_APTLY_PUBLISHER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyS3PocStack.AptlyRepositoryPublisherRoleArn)" >> $GITHUB_OUTPUT
+          echo "AWS_APTLY_KEY_MANAGER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyS3PocStack.AptlyRepositoryKeyManagerRoleArn)" >> $GITHUB_OUTPUT
       - name: Update package bucket secret (Publish)
         uses: mmercan/actions-set-secret@v/4.0.0
         with:
