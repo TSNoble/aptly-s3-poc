@@ -42,5 +42,5 @@ jobs:
           --environment Publish
           --token ${{ secrets.REPOSITORY_PAT }}
           --name APTLY_GPG_PRIVATE_KEY
-          --value ${{ steps.cdk.outputs.APTLY_GPG_PRIVATE_KEY }}
+          --value ${{ steps.gpg.outputs.APTLY_GPG_PRIVATE_KEY }}
 
