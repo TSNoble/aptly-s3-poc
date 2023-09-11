@@ -25,7 +25,7 @@ jobs:
           pip3 install -r requirements-dev.txt
       - name: Generate Aptly config
         run: >
-          jinja2 ./templates/.aptly.conf.j2
+          jinja2 ./config/.aptly.conf.j2
           -D region=${{ secrets.AWS_DEFAULT_REGION }}
           -D bucket=${{ secrets.AWS_APTLY_PACKAGE_BUCKET_NAME }}
           -o /tmp/.aptly.conf
