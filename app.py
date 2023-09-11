@@ -7,7 +7,7 @@ from aws_cdk import (
     aws_iam as iam,
 )
 
-from aptly_s3_poc.aptly_s3_poc_stack import AptlyS3PocStack
+from aptly_s3_poc.stacks.aptly_s3_poc_stack import AptlyS3PocStack
 
 
 app = cdk.App()
