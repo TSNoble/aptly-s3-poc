@@ -62,3 +62,22 @@ jobs:
           --token ${{ secrets.REPOSITORY_PAT }}
           --name AWS_APTLY_KEY_MANAGER_ROLE_ARN
           --value ${{ steps.cdk.outputs.AWS_APTLY_KEY_MANAGER_ROLE_ARN }}
+            - name: Update key manager role secret
+      - name: Update package bucket secret
+        run: >
+          invoke create-github-secret
+          --repo ${{ github.repository_id }}
+          --environment Publish
+          --token ${{ secrets.REPOSITORY_PAT }}
+          --name AWS_APTLY_PACKAGE_BUCKET_NAME
+          --value ${{ steps.cdk.outputs.AWS_APTLY_PACKAGE_BUCKET_NAME }}
+            - name: Update key manager role secret
+      - name: Update publisher role secret
+        run: >
+          invoke create-github-secret
+          --repo ${{ github.repository_id }}
+          --environment Publish
+          --token ${{ secrets.REPOSITORY_PAT }}
+          --name AWS_APTLY_PUBLISHER_ROLE_ARN
+          --value ${{ steps.cdk.outputs.AWS_APTLY_PUBLISHER_ROLE_ARN }}
+      

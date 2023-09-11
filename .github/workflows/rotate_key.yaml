@@ -17,13 +17,12 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get install -y gpgv1 gnupg1
-          pip install awscli
+          pip install -r requirements-dev.txt
       - name: Generate signing key pair
         id: gpg
         run: |
           gpg1 --batch --gen-key keygen.conf
           echo "APTLY_GPG_PRIVATE_KEY=$(gpg1 --armor --export-secret-key rivelinrobotics@gmail.com | base64 -w 0)" >> $GITHUB_OUTPUT
-          echo ${{ secrets.AWS_APTLY_KEY_MANAGER_ROLE_ARN }} | wc -c
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -36,12 +35,12 @@ jobs:
         run: |
           gpg1 --output /tmp/public.pgp --armor --export rivelinrobotics@gmail.com
           aws s3 cp /tmp/public.pgp s3://${{ secrets.AWS_APTLY_KEY_BUCKET_NAME }}
-      - name: Update private key secret (Publish)
-        uses: mmercan/actions-set-secret@v/4.0.0
-        with:
-          name: APTLY_GPG_PRIVATE_KEY
-          value: ${{ steps.gpg.outputs.APTLY_GPG_PRIVATE_KEY }}
-          repository: TSNoble/aptly-s3-poc
-          token: ${{ secrets.REPOSITORY_PAT }}
-          environment: Publish
+      - name: Update private key secret
+        run: >
+          invoke create-github-secret
+          --repo ${{ github.repository_id }}
+          --environment Publish
+          --token ${{ secrets.REPOSITORY_PAT }}
+          --name APTLY_GPG_PRIVATE_KEY
+          --value ${{ steps.cdk.outputs.APTLY_GPG_PRIVATE_KEY }}
 
