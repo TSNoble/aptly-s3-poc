@@ -76,7 +76,7 @@ jobs:
         uses: mmercan/actions-set-secret@v/4.0.0
         with:
           name: AWS_APTLY_KEY_MANAGER_ROLE_ARN
-          value: ${{ steps.cdk.outputs.AWS_APTLY_KEY_MANAGER_ROLE_ARN }}
+          value: Foo
           repository: TSNoble/aptly-s3-poc
           token: ${{ secrets.REPOSITORY_PAT }}
           environment: KeyRotation
