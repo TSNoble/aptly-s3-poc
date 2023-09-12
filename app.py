@@ -3,7 +3,7 @@ import os
 
 import aws_cdk as cdk
 
-from aptly_s3_poc.stacks.aptly_repository_stack import AptlyRepositoryStack
+from aws.stacks.aptly_repository_stack import AptlyRepositoryStack
 
 
 app = cdk.App()
