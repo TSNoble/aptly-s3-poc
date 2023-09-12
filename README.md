@@ -36,11 +36,11 @@ Diagram to add
 
 ### Security Principles
 
-- Only the GitHub runner for this repository may perform deployments to the Development account
-- Only the Github runner for this repository may publish new snapshots to the Development account
-- Only the Github runner for this repository may modify the package signing key-pair
-- Github runners may download packages from the repository provided they are permitted to assume the read-only role
-- Developers may download packages from the repository provided they are a member of the read-only group
+- Only the GitHub runner for this repository may perform deployments.
+- Only the Github runner for this repository may publish new snapshots.
+- Only the Github runner for this repository may modify the package signing key-pair.
+- Github runners may download packages provided they are permitted to assume the read-only role
+- Developers may download packages provided they are a member of the read-only group
 
 ## Developer Guide
 
