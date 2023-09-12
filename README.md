@@ -128,7 +128,7 @@ Finally, build the package using `dpkg-deb`:
 dpkg-deb -Zxz --build test_package-0.0.1_x86_64
 ```
 
-The `-Xzx` flags are required to ensure that `xz` compression is used, as Aptly does not support the default compression type.
+The `-Zxz` flags are required to ensure that `xz` compression is used, as Aptly does not support the default compression type.
 
 To test the validity of the package, you can try adding it to a local Aptly repository:
 
