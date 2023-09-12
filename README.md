@@ -159,9 +159,9 @@ Region = {The AWS Region}
 
 Next, add the Aptly repository s3 bucket as an apt source.
 
-The bucket name can be found by looking at the CDK outputs of the most recent successful Deploy to AWS GitHub workflow.
+ - The bucket name can be found by looking at the CDK outputs of the most recent successful Deploy to AWS GitHub workflow.
 
-The public key can be found by looking at the output of the most recent successful Rotate Signing Key GitHub workflow
+ - The public key can be found by looking at the output of the most recent successful Rotate Signing Key GitHub workflow
 
 ```sh
 echo "deb s3:{Bucket Name} jammy main" > /etc/apt/sources.list.d/rivelin-dependencies.list
