@@ -34,6 +34,8 @@ jobs:
       - name: Upload new public key
         run: |
           gpg1 --output /tmp/public.pgp --armor --export rivelinrobotics@gmail.com
+          echo "Public Key"
+          cat /tmp/public.pgp
           aws s3 cp /tmp/public.pgp s3://${{ secrets.AWS_APTLY_KEY_BUCKET_NAME }}
       - name: Update private key secret
         run: >
