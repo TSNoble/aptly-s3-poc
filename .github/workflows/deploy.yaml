@@ -35,17 +35,17 @@ jobs:
       - name: Bootstrap environment
         run: cdk bootstrap
       - name: Synthesize stack
-        run: cdk synth AptlyS3PocStack
+        run: cdk synth AptlyRepositoryStack
       - name: Deploy stack
-        run: cdk deploy --require-approval never AptlyS3PocStack --outputs-file /tmp/cdk-outputs.json
+        run: cdk deploy --require-approval never AptlyRepositoryStack --outputs-file /tmp/cdk-outputs.json
       - name: Export CDK outputs
         id: cdk
         run: |
           cat /tmp/cdk-outputs.json
-          echo "AWS_APTLY_PACKAGE_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyS3PocStack.AptlyRepositoryPackageBucketName)" >> $GITHUB_OUTPUT
-          echo "AWS_APTLY_KEY_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyS3PocStack.AptlyRepositoryKeyBucketName)" >> $GITHUB_OUTPUT
-          echo "AWS_APTLY_PUBLISHER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyS3PocStack.AptlyRepositoryPublisherRoleArn)" >> $GITHUB_OUTPUT
-          echo "AWS_APTLY_KEY_MANAGER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyS3PocStack.AptlyRepositoryKeyManagerRoleArn)" >> $GITHUB_OUTPUT
+          echo "AWS_APTLY_PACKAGE_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryStack.AptlyRepositoryPackageBucketName)" >> $GITHUB_OUTPUT
+          echo "AWS_APTLY_KEY_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryStack.AptlyRepositoryKeyBucketName)" >> $GITHUB_OUTPUT
+          echo "AWS_APTLY_PUBLISHER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryStack.AptlyRepositoryPublisherRoleArn)" >> $GITHUB_OUTPUT
+          echo "AWS_APTLY_KEY_MANAGER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryStack.AptlyRepositoryKeyManagerRoleArn)" >> $GITHUB_OUTPUT
       - name: Update key bucket secret
         run: >
           invoke create-github-secret
