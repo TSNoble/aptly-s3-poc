@@ -27,6 +27,18 @@ In order for a GitHub runner to authenticate with AWS, an Administrator must set
    - Provider Type: OpenID Connect
    - Provider URL: token.actions.githubusercontent.com
    - Audience: sts.amazonaws.com
+4. Copy the Amazon Resource Name (ARN) of the Provider into a AWS_GITHUB_PROVIDER_ARN secret of the Deploy environment
+
+Furthermore, a Personal Access Token must be generated to allow the workflows of this repository to update their secrets:
+
+1. Log in to GitHub
+2. Navigate to Settings > Developer Settings > Personal Access Tokens > Fine-Grained Tokens > Generate New Token
+3. Configure the Token with the following settings:
+   - Repository Acess: Only Select Repositories > {This Repository}
+   - Permissions > Repository Permissions:
+      - Environments: Read and Write
+      - Secrets: Read and Write
+4. Copy the contents of the PAT into a repository-level REPOSITORY_TOKEN secret
 
 ## Design
 
