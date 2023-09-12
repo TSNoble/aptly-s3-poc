@@ -174,3 +174,5 @@ Finally, check that everything is working by attempting to install a package, e.
 sudo apt-get update
 sudo apt-get install test-package
 ```
+
+If you are getting a 403 error trying to access the repository, you may need an Administrator to add your AWS user to the AptlyRepositoryReadOnlyGroup.
