@@ -3,20 +3,16 @@ import os
 
 import aws_cdk as cdk
 
-from aws_cdk import (
-    aws_iam as iam,
-)
-
-from aptly_s3_poc.stacks.aptly_s3_poc_stack import AptlyS3PocStack
+from aptly_s3_poc.stacks.aptly_repository_stack import AptlyRepositoryStack
 
 
 app = cdk.App()
 
 github_provider_arn = os.environ["AWS_GITHUB_PROVIDER_ARN"]
 
-AptlyS3PocStack(
+AptlyRepositoryStack(
     scope=app,
-    id="AptlyS3PocStack",
+    id="AptlyRepositoryStack",
     github_provider_arn=github_provider_arn,
 )
 

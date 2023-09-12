@@ -10,7 +10,7 @@ from aptly_s3_poc.constructs import (
     aws_github as github
 )
 
-class AptlyS3PocStack(Stack):
+class AptlyRepositoryStack(Stack):
 
     def __init__(self, scope: Construct, id: str, github_provider_arn: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
