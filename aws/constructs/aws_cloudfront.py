@@ -26,9 +26,9 @@ class HttpsS3Distribution(cloudfront.Distribution):
             default_behavior=cloudfront.BehaviorOptions(
                 origin=origins.S3Origin(
                     bucket=bucket,
-                    custom_headers= {
+                    custom_headers={
                         "X-Aws-Distribution-Bucket-Name": bucket.bucket_name,
-                    }
+                    },
                 ),
                 edge_lambdas=[
                     cloudfront.EdgeLambda(
