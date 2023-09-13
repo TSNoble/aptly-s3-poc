@@ -29,7 +29,7 @@ In order for a GitHub runner to authenticate with AWS, an Administrator must set
    - Audience: sts.amazonaws.com
 4. Copy the Amazon Resource Name (ARN) of the Provider into a AWS_GITHUB_PROVIDER_ARN secret of the Deploy environment
 
-Furthermore, a Personal Access Token must be generated to allow the workflows of this repository to update their secrets:
+Furthermore, a Personal Access Token (PAT) must be generated to allow the workflows of this repository to update secrets:
 
 1. Log in to GitHub
 2. Navigate to Settings > Developer Settings > Personal Access Tokens > Fine-Grained Tokens > Generate New Token
