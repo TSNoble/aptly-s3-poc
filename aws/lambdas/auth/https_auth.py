@@ -15,7 +15,7 @@ def handler(event, _):
     request = event["Records"][0]["cf"]["request"]
     logging.warning(request)
     headers = request["headers"]
-    custom_headers = request["origin"]["custom"]["customHeaders"]
+    custom_headers = request["origin"]["s3"]["customHeaders"]
     bucket = custom_headers["x-aws-distribution-bucket-name"][0]["value"]
     object = request["uri"].lstrip("/")
     id = ""
