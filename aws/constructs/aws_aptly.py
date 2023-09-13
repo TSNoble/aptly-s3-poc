@@ -20,7 +20,7 @@ class AptlyRepository(Construct):
 
         self.bucket = s3.Bucket(
             scope=self,
-            id="KeyBucket",
+            id="Bucket",
             auto_delete_objects=True,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             encryption=s3.BucketEncryption.S3_MANAGED,
@@ -30,7 +30,7 @@ class AptlyRepository(Construct):
 
         s3_deploy.SingleFileBucketDeployment(
             scope=self,
-            id="KeyBucketIndexDeployment",
+            id="BucketIndexDeployment",
             destination_bucket=self.bucket,
             file=Path.cwd().absolute() / "config/index.html",
         )

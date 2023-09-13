@@ -31,7 +31,7 @@ jobs:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           role-session-name: GithubRunnerKeyRotation
       - name: Delete old public key
-        run: aws s3 rm s3://${{ secrets.AWS_APTLY_KEY_BUCKET_NAME }}/public.pgp
+        run: aws s3 rm s3://${{ secrets.AWS_APTLY_BUCKET_NAME }}/public.pgp
       - name: Upload new public key
         run: |
           gpg1 --output /tmp/public.pgp --armor --export rivelinrobotics@gmail.com
