@@ -17,27 +17,10 @@ class AptlyRepository(Construct):
 
     def __init__(self, scope: Construct, id: str):
         super(AptlyRepository, self).__init__(scope, id)
-        self.package_bucket = s3.Bucket(
-            scope=self,
-            id="PackageBucket",
-            auto_delete_objects=True,
-            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
-            encryption=s3.BucketEncryption.S3_MANAGED,
-            enforce_ssl=True,
-            removal_policy=RemovalPolicy.DESTROY,
-        )
 
-        self.package_domain = route53.HttpsS3Domain(
-            scope=self,
-            id="PackageDomain",
-            domain="dev.downloads.rivel.in",
-            bucket=self.package_bucket,
-        )
-
-        self.key_bucket = s3.Bucket(
+        self.bucket = s3.Bucket(
             scope=self,
             id="KeyBucket",
-            website_index_document="index.html",
             auto_delete_objects=True,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             encryption=s3.BucketEncryption.S3_MANAGED,
@@ -48,13 +31,27 @@ class AptlyRepository(Construct):
         s3_deploy.SingleFileBucketDeployment(
             scope=self,
             id="KeyBucketIndexDeployment",
-            destination_bucket=self.key_bucket,
+            destination_bucket=self.bucket,
             file=Path.cwd().absolute() / "config/index.html",
+        )
+
+        self.domain = route53.HttpsS3Domain(
+            scope=self,
+            id="Domain",
+            domain="dev.downloads.rivel.in",
+            bucket=self.bucket,
         )
 
     def grant_read_package(self, principal: iam.IGrantable):
         """ Grants a `principal` permission to read packages."""
-        self.package_bucket.grant_read(principal)
+        self.bucket.grant_read(
+            principal,
+            objects_key_pattern="dists/*",
+        )
+        self.bucket.grant_read(
+            principal,
+            objects_key_pattern="pool/*",
+        )
     
     def grant_publish_package(self, principal: iam.IGrantable):
         """ Grants a `principal` permission to publish packages."""
@@ -68,8 +65,8 @@ class AptlyRepository(Construct):
                 "s3:PutObjectAcl",
             ],
             resources=[
-                self.package_bucket.bucket_arn,
-                f"{self.package_bucket.bucket_arn}/*"
+                self.bucket.bucket_arn,
+                f"{self.bucket.bucket_arn}/*"
             ]
         )
         principal.add_to_policy(allow_publish)
@@ -84,7 +81,7 @@ class AptlyRepository(Construct):
                 "s3:PutObject",
             ],
             resources=[
-                f"{self.key_bucket.bucket_arn}/public.pgp",
+                f"{self.bucket.bucket_arn}/public.pgp",
             ]
         )
         principal.add_to_policy(allow_update_key)

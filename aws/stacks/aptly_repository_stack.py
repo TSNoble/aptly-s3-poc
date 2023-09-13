@@ -13,6 +13,7 @@ from aws.constructs import (
 class AptlyRepositoryStack(Stack):
 
     def __init__(self, scope: Construct, id: str, github_provider_arn: str, **kwargs) -> None:
+        
         super().__init__(scope, id, **kwargs)
 
         repository = aptly.AptlyRepository(
@@ -22,14 +23,8 @@ class AptlyRepositoryStack(Stack):
 
         CfnOutput(
             scope=self,
-            id="AptlyRepositoryPackageBucketName",
-            value=repository.package_bucket.bucket_name,
-        )
-
-        CfnOutput(
-            scope=self,
-            id="AptlyRepositoryKeyBucketName",
-            value=repository.key_bucket.bucket_name,
+            id="BucketName",
+            value=repository.bucket.bucket_name,
         )
 
         github_provider = iam.OpenIdConnectProvider.from_open_id_connect_provider_arn(
@@ -46,14 +41,14 @@ class AptlyRepositoryStack(Stack):
 
         read_only_group = iam.Group(
             scope=self,
-            id="AptlyRepositoryReadOnlyGroup",
+            id="ReadOnlyGroup",
         )
 
         repository.grant_read_package(read_only_group)
 
         read_only_role = iam.Role(
             scope=self,
-            id="AptlyRepositoryReadOnlyRole",
+            id="ReadOnlyRole",
             assumed_by=github_publisher_principal,
             description="A role granting read-only access to the Aptly repository."
         )
@@ -62,7 +57,7 @@ class AptlyRepositoryStack(Stack):
         
         publisher_role = iam.Role(
             scope=self,
-            id="AptlyRepositoryPublisherRole",
+            id="PublisherRole",
             assumed_by=github_publisher_principal,
             description="A role granting write-only access to the Aptly repository."
         )
@@ -77,14 +72,14 @@ class AptlyRepositoryStack(Stack):
 
         key_manager_role = iam.Role(
             scope=self,
-            id="AptlyRepositoryKeyManagerRole",
+            id="KeyManagerRole",
             assumed_by=github_key_manager_principal,
             description="A role granting signing key update permissions to the Aptly repository."
         )
 
         CfnOutput(
             scope=self,
-            id="AptlyRepositoryPublisherRoleArn",
+            id="PublisherRoleArn",
             value=publisher_role.role_arn,
         )
 
@@ -92,6 +87,6 @@ class AptlyRepositoryStack(Stack):
 
         CfnOutput(
             scope=self,
-            id="AptlyRepositoryKeyManagerRoleArn",
+            id="KeyManagerRoleArn",
             value=key_manager_role.role_arn,
         )

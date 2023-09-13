@@ -27,7 +27,7 @@ jobs:
         run: >
           jinja2 ./config/.aptly.conf.j2
           -D region=${{ secrets.AWS_DEFAULT_REGION }}
-          -D bucket=${{ secrets.AWS_APTLY_PACKAGE_BUCKET_NAME }}
+          -D bucket=${{ secrets.AWS_APTLY_BUCKET_NAME }}
           -o /tmp/.aptly.conf
       - name: Configure AWS credentials
         id: aws-credentials

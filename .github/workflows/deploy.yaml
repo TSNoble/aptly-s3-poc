@@ -41,19 +41,17 @@ jobs:
       - name: Export CDK outputs
         id: cdk
         run: |
-          cat /tmp/cdk-outputs.json
-          echo "AWS_APTLY_PACKAGE_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryStack.AptlyRepositoryPackageBucketName)" >> $GITHUB_OUTPUT
-          echo "AWS_APTLY_KEY_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryStack.AptlyRepositoryKeyBucketName)" >> $GITHUB_OUTPUT
-          echo "AWS_APTLY_PUBLISHER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryStack.AptlyRepositoryPublisherRoleArn)" >> $GITHUB_OUTPUT
-          echo "AWS_APTLY_KEY_MANAGER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryStack.AptlyRepositoryKeyManagerRoleArn)" >> $GITHUB_OUTPUT
-      - name: Update key bucket secret
+          echo "AWS_APTLY_BUCKET_NAME=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryStack.BucketName)" >> $GITHUB_OUTPUT
+          echo "AWS_APTLY_PUBLISHER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryStack.PublisherRoleArn)" >> $GITHUB_OUTPUT
+          echo "AWS_APTLY_KEY_MANAGER_ROLE_ARN=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryStack.KeyManagerRoleArn)" >> $GITHUB_OUTPUT
+      - name: Update bucket secret (KeyRotation)
         run: >
           invoke create-github-secret
           --repo ${{ github.repository_id }}
           --environment KeyRotation
           --token ${{ secrets.REPOSITORY_PAT }}
-          --name AWS_APTLY_KEY_BUCKET_NAME
-          --value ${{ steps.cdk.outputs.AWS_APTLY_KEY_BUCKET_NAME }}
+          --name AWS_APTLY_BUCKET_NAME
+          --value ${{ steps.cdk.outputs.AWS_APTLY_BUCKET_NAME }}
       - name: Update key manager role secret
         run: >
           invoke create-github-secret
@@ -62,14 +60,14 @@ jobs:
           --token ${{ secrets.REPOSITORY_PAT }}
           --name AWS_APTLY_KEY_MANAGER_ROLE_ARN
           --value ${{ steps.cdk.outputs.AWS_APTLY_KEY_MANAGER_ROLE_ARN }}
-      - name: Update package bucket secret
+      - name: Update bucket secret (Publish)
         run: >
           invoke create-github-secret
           --repo ${{ github.repository_id }}
           --environment Publish
           --token ${{ secrets.REPOSITORY_PAT }}
-          --name AWS_APTLY_PACKAGE_BUCKET_NAME
-          --value ${{ steps.cdk.outputs.AWS_APTLY_PACKAGE_BUCKET_NAME }}
+          --name AWS_APTLY_BUCKET_NAME
+          --value ${{ steps.cdk.outputs.AWS_APTLY_BUCKET_NAME }}
       - name: Update publisher role secret
         run: >
           invoke create-github-secret
