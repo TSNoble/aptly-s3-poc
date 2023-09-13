@@ -15,6 +15,7 @@ UNAUTHORIZED_RESPONSE = {
 def handler(event, _):
     request = event["Records"][0]["cf"]["request"]
     headers = request["headers"]
+    logging.info(headers)
     try:
         encoded_auth = headers["authorization"][0]["value"].lstrip("Basic ")
         decoded_auth = base64.b64decode(encoded_auth).decode("utf-8")
