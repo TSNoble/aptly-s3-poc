@@ -25,7 +25,7 @@ class HttpsS3Distribution(cloudfront.Distribution):
                 origin=origins.S3Origin(
                     bucket=bucket,
                     custom_headers= {
-                        "aws-deployment-bucket-name": bucket.bucket_name,
+                        "X-Aws-Deployment-Bucket-Name": bucket.bucket_name,
                     }
                 ),
                 edge_lambdas=[
@@ -34,6 +34,8 @@ class HttpsS3Distribution(cloudfront.Distribution):
                         event_type=cloudfront.LambdaEdgeEventType.VIEWER_REQUEST,
                     )
                 ],
+                viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.HTTPS_ONLY,
+                origin_request_policy=cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
             ),
             *args,
             **kwargs,
