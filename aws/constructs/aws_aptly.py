@@ -14,11 +14,12 @@ from aws.constructs import (
 class AptlyRepository(Construct):
     """ An pair S3 Buckets which host apt packages managed via Aptly, and the public signing key."""
 
-    def __init__(self, scope: Construct, id: str):
+    def __init__(self, scope: Construct, domain: str, id: str):
         super(AptlyRepository, self).__init__(scope, id)
         self.package_bucket = s3.Bucket(
             scope=self,
             id=f"PackageBucket",
+            name="downloads.rivel.in",
             auto_delete_objects=True,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             encryption=s3.BucketEncryption.S3_MANAGED,
