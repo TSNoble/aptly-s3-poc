@@ -22,7 +22,7 @@ def handler(event, _):
         decoded_auth = base64.b64decode(encoded_auth).decode("utf-8")
         id, secret = decoded_auth.split(":")
         session = boto3.Session(aws_access_key_id=id, aws_secret_access_key=secret)
-        session.client("s3").get_object(Bucket=bucket, Key="index.html")
+        session.client("s3").get_object(Bucket=bucket, Key="public.pgp")
         return request
     except KeyError:
         logging.error("Request does not contain expected authorization headers")
