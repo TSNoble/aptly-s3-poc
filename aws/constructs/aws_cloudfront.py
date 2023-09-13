@@ -7,13 +7,14 @@ from aws_cdk import (
     aws_s3 as s3,
 )
 
+
 class HttpsS3Distribution(cloudfront.Distribution):
 
     def __init__(self, bucket: s3.Bucket, *args, **kwargs):
         
         auth_lambda = cloudfront.experimental.EdgeFunction(
-            scope=self,
-            id="HttpsAuthLambda",
+            scope=kwargs["scope"],
+            id=f"{kwargs['id']}HttpsAuthLambda",
             runtime=lambda_.Runtime.PYTHON_3_11,
             handler="https_auth.handler",
             code=lambda_.Code.from_asset(str(Path.cwd().absolute() / "aws/lambdas/auth")),
@@ -25,7 +26,7 @@ class HttpsS3Distribution(cloudfront.Distribution):
                 edge_lambdas=[
                     cloudfront.EdgeLambda(
                         function_version=auth_lambda.current_version,
-                        event_type=cloudfront.FunctionEventType.VIEWER_REQUEST,
+                        event_type=cloudfront.LambdaEdgeEventType.VIEWER_REQUEST,
                     )
                 ],
             ),

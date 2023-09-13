@@ -14,6 +14,7 @@ AptlyRepositoryStack(
     scope=app,
     id="AptlyRepositoryStack",
     github_provider_arn=github_provider_arn,
+    env=cdk.Environment(account="778015471639", region="us-east-1"),
 )
 
 app.synth()

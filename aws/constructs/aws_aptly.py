@@ -9,6 +9,7 @@ from constructs import Construct
 
 from aws.constructs import (
     aws_s3_deployment as s3_deploy,
+    aws_cloudfront as cloudfront,
 )
 
 class AptlyRepository(Construct):
@@ -18,8 +19,7 @@ class AptlyRepository(Construct):
         super(AptlyRepository, self).__init__(scope, id)
         self.package_bucket = s3.Bucket(
             scope=self,
-            id=f"PackageBucket",
-            bucket_name="downloads.rivel.in",
+            id="PackageBucket",
             auto_delete_objects=True,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             encryption=s3.BucketEncryption.S3_MANAGED,
@@ -27,9 +27,15 @@ class AptlyRepository(Construct):
             removal_policy=RemovalPolicy.DESTROY,
         )
 
+        self.package_distribution = cloudfront.HttpsS3Distribution(
+            scope=self,
+            id="PackageDistribution",
+            bucket=self.package_bucket,
+        )
+
         self.key_bucket = s3.Bucket(
             scope=self,
-            id=f"KeyBucket",
+            id="KeyBucket",
             website_index_document="index.html",
             auto_delete_objects=True,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
@@ -40,9 +46,15 @@ class AptlyRepository(Construct):
 
         s3_deploy.SingleFileBucketDeployment(
             scope=self,
-            id=f"KeyBucketIndexDeployment",
+            id="KeyBucketIndexDeployment",
             destination_bucket=self.key_bucket,
             file=Path.cwd().absolute() / "config/index.html",
+        )
+
+        self.key_distribution = cloudfront.HttpsS3Distribution(
+            scope=self,
+            id="KeyDistribution",
+            bucket=self.key_bucket,
         )
 
     def grant_read_package(self, principal: iam.IGrantable):
