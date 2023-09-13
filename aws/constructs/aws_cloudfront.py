@@ -5,6 +5,7 @@ from aws_cdk import (
     aws_cloudfront_origins as origins,
     aws_lambda as lambda_,
     aws_s3 as s3,
+    Duration,
 )
 
 
@@ -18,6 +19,7 @@ class HttpsS3Distribution(cloudfront.Distribution):
             runtime=lambda_.Runtime.PYTHON_3_11,
             handler="https_auth.handler",
             code=lambda_.Code.from_asset(str(Path.cwd().absolute() / "aws/lambdas/auth")),
+            timeout=Duration.seconds(10),
         )
 
         super(HttpsS3Distribution, self).__init__(
