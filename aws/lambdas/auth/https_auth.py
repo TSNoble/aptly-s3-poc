@@ -15,7 +15,7 @@ def handler(event, _):
     request = event["Records"][0]["cf"]["request"]
     logging.warning(request)
     headers = request["headers"]
-    custom_headers = request["origin"]["s3"]["customHeaders"]
+    custom_headers = request["origin"]["custom"]["customHeaders"]
     try:
         encoded_auth = headers["authorization"][0]["value"].lstrip("Basic ")
         decoded_auth = base64.b64decode(encoded_auth).decode("utf-8")
