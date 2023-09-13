@@ -18,14 +18,20 @@ def handler(event, _):
     custom_headers = request["origin"]["custom"]["customHeaders"]
     bucket = custom_headers["x-aws-distribution-bucket-name"][0]["value"]
     object = request["uri"].lstrip("/")
+    id = ""
+    secret = ""
     try:
         encoded_auth = headers["authorization"][0]["value"].lstrip("Basic ")
         decoded_auth = base64.b64decode(encoded_auth).decode("utf-8")
         id, secret = decoded_auth.split(":")
+    except KeyError:
+        pass
+    try:
         session = boto3.Session(aws_access_key_id=id, aws_secret_access_key=secret)
         session.client("s3").get_object(Bucket=bucket, Key=object)
-        return request
-    except KeyError:
-        logging.error("Request does not contain expected authorization headers")
-        return UNAUTHORIZED_RESPONSE
+    except ClientError as e:
+        logging.error(e)
+        raise e
+    return request
+    
 
