@@ -18,6 +18,9 @@ class HttpsS3Distribution(cloudfront.Distribution):
             runtime=lambda_.Runtime.PYTHON_3_11,
             handler="https_auth.handler",
             code=lambda_.Code.from_asset(str(Path.cwd().absolute() / "aws/lambdas/auth")),
+            environment={
+                "AWS_DISTRIBUTION_BUCKET": bucket.bucket_name,
+            }
         )
 
         super(HttpsS3Distribution, self).__init__(
