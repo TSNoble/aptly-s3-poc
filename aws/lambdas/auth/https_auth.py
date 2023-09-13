@@ -1,8 +1,15 @@
 import os
 import base64
+import logging
 
 import boto3
 from botocore.exceptions import ClientError
+
+
+UNAUTHORIZED_RESPONSE = {
+    "status": 401,
+    "statusDescription": "Unauthorized",
+}
 
 
 def handler(event, _):
@@ -16,8 +23,9 @@ def handler(event, _):
         bucket = os.environ["AWS_DEPLOYMENT_BUCKET_NAME"]
         session.client("s3").get_object(Bucket=bucket, Key="index.html")
         return request
-    except (KeyError, ClientError):
-        return {
-            "status": 401,
-            "statusDescription": "Unauthorized",
-        }
+    except (KeyError, ClientError) as e:
+        logging.error("Request does not contain expected authorization headers")
+        return UNAUTHORIZED_RESPONSE
+    except ClientError as e:
+        logging.error(e.response["Error"])
+        return UNAUTHORIZED_RESPONSE
