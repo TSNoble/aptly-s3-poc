@@ -51,8 +51,8 @@ Diagram to add
 - Only the GitHub runner for this repository may perform deployments.
 - Only the Github runner for this repository may publish new snapshots.
 - Only the Github runner for this repository may modify the package signing key-pair.
-- Github runners may download packages provided they are permitted to assume the read-only role
-- Developers may download packages provided they are a member of the read-only group
+- Github runners may download packages provided they are permitted to assume the read-only role.
+- Developers may download packages provided they are a member of the read-only group.
 
 ## Developer Guide
 
@@ -155,32 +155,15 @@ Copy the generated `.deb` package to the `debs` directory of this repository and
 
 _Note: This process may be subject to change_
 
-Begin by installing `apt-s3-transport`, which is required to download packages from private s3 buckets:
+Run the following lines of code to add the public key and source of the repository:
 
 ```sh
-sudo apt-get install apt-s3-transport
+curl -u {Your Access Key ID}:{Your Secret Access Key} dev.downloads.rivel.in/public.pgp | sudo apt-key add
+echo "deb https://dev.downloads.rivel.in jammy main" > /etc/apt/sources.list.d/rivelin-source-dependencies.list
+echo "machine dev.download.rivel.in login {Your Access Key ID} password {Your Secret Access Key}" > /etc/apt/auth.conf.d/rivelin-source-dependencies.conf
 ```
 
-Next, create the `/etc/apt/s3auth.conf` file and populate it with your AWS credentials:
-
-```
-AccessKeyId = {Your Access Key Id}
-SecretAccessKey = {Your Secret Access Key}
-Region = {The AWS Region}
-```
-
-Next, add the Aptly repository s3 bucket as an apt source.
-
- - The bucket name can be found by looking at the CDK outputs of the most recent successful Deploy to AWS GitHub workflow.
-
- - The public key can be found by looking at the output of the most recent successful Rotate Signing Key GitHub workflow
-
-```sh
-echo "deb s3:{Bucket Name} jammy main" > /etc/apt/sources.list.d/rivelin-dependencies.list
-echo {Public Key} | base64 --decode | apt-key add
-```
-
-Finally, check that everything is working by attempting to install a package, e.g.
+Check that everything is working by attempting to install a package, e.g.
 
 ```sh
 sudo apt-get update
