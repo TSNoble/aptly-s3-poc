@@ -18,14 +18,16 @@ class HttpsS3Distribution(cloudfront.Distribution):
             runtime=lambda_.Runtime.PYTHON_3_11,
             handler="https_auth.handler",
             code=lambda_.Code.from_asset(str(Path.cwd().absolute() / "aws/lambdas/auth")),
-            environment={
-                "AWS_DEPLOYMENT_BUCKET_NAME": bucket.bucket_name,
-            }
         )
 
         super(HttpsS3Distribution, self).__init__(
             default_behavior=cloudfront.BehaviorOptions(
-                origin=origins.S3Origin(bucket),
+                origin=origins.S3Origin(
+                    bucket=bucket,
+                    custom_headers= {
+                        "aws-deployment-bucket-name": bucket.bucket_name,
+                    }
+                ),
                 edge_lambdas=[
                     cloudfront.EdgeLambda(
                         function_version=auth_lambda.current_version,

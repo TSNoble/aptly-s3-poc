@@ -1,4 +1,3 @@
-import os
 import base64
 import logging
 
@@ -21,7 +20,7 @@ def handler(event, _):
         decoded_auth = base64.b64decode(encoded_auth).decode("utf-8")
         id, secret = decoded_auth.split(":")
         session = boto3.Session(aws_access_key_id=id, aws_secret_access_key=secret)
-        bucket = os.environ["AWS_DEPLOYMENT_BUCKET_NAME"]
+        bucket = headers["aws-deployment-bucket-name"]
         session.client("s3").get_object(Bucket=bucket, Key="index.html")
         return request
     except (KeyError, ClientError) as e:
