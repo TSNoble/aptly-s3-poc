@@ -16,7 +16,7 @@ def handler(event, _):
     logging.warning(request)
     headers = request["headers"]
     custom_headers = request["origin"]["custom"]["customHeaders"]
-    bucket = custom_headers["x-aws-deployment-bucket-name"][0]["value"]
+    bucket = custom_headers["x-aws-distribution-bucket-name"][0]["value"]
     try:
         encoded_auth = headers["authorization"][0]["value"].lstrip("Basic ")
         decoded_auth = base64.b64decode(encoded_auth).decode("utf-8")
