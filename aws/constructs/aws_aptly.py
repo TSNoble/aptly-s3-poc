@@ -9,7 +9,7 @@ from constructs import Construct
 
 from aws.constructs import (
     aws_s3_deployment as s3_deploy,
-    aws_cloudfront as cloudfront,
+    aws_route53 as route53,
 )
 
 class AptlyRepository(Construct):
@@ -27,9 +27,10 @@ class AptlyRepository(Construct):
             removal_policy=RemovalPolicy.DESTROY,
         )
 
-        self.package_distribution = cloudfront.HttpsS3Distribution(
+        self.package_domain = route53.HttpsS3Domain(
             scope=self,
-            id="PackageDistribution",
+            id="PackageDomain",
+            domain="dev.downloads.rivel.in",
             bucket=self.package_bucket,
         )
 
@@ -49,12 +50,6 @@ class AptlyRepository(Construct):
             id="KeyBucketIndexDeployment",
             destination_bucket=self.key_bucket,
             file=Path.cwd().absolute() / "config/index.html",
-        )
-
-        self.key_distribution = cloudfront.HttpsS3Distribution(
-            scope=self,
-            id="KeyDistribution",
-            bucket=self.key_bucket,
         )
 
     def grant_read_package(self, principal: iam.IGrantable):
