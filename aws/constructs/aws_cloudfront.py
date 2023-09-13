@@ -31,7 +31,7 @@ class HttpsS3Distribution(cloudfront.Distribution):
                 edge_lambdas=[
                     cloudfront.EdgeLambda(
                         function_version=auth_lambda.current_version,
-                        event_type=cloudfront.LambdaEdgeEventType.VIEWER_REQUEST,
+                        event_type=cloudfront.LambdaEdgeEventType.ORIGIN_REQUEST,
                     )
                 ],
                 viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.HTTPS_ONLY,
