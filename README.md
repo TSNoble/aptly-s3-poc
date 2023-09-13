@@ -160,7 +160,7 @@ Run the following lines of code to add the public key and source of the reposito
 ```sh
 curl -u {Your Access Key ID}:{Your Secret Access Key} dev.downloads.rivel.in/public.pgp | sudo apt-key add
 echo "deb https://dev.downloads.rivel.in jammy main" > /etc/apt/sources.list.d/rivelin-source-dependencies.list
-echo "machine dev.download.rivel.in login {Your Access Key ID} password {Your Secret Access Key}" > /etc/apt/auth.conf.d/rivelin-source-dependencies.conf
+echo "machine dev.downloads.rivel.in login {Your Access Key ID} password {Your Secret Access Key}" > /etc/apt/auth.conf.d/rivelin-source-dependencies.conf
 ```
 
 Check that everything is working by attempting to install a package, e.g.
