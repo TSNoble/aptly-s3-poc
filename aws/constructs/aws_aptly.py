@@ -14,7 +14,7 @@ from aws.constructs import (
 class AptlyRepository(Construct):
     """ An pair S3 Buckets which host apt packages managed via Aptly, and the public signing key."""
 
-    def __init__(self, scope: Construct, domain: str, id: str):
+    def __init__(self, scope: Construct, id: str):
         super(AptlyRepository, self).__init__(scope, id)
         self.package_bucket = s3.Bucket(
             scope=self,
