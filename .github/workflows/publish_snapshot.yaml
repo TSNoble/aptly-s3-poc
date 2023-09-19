@@ -33,7 +33,7 @@ on:
         type: string
         description: "The version of the snapshot."
 jobs:
-  publish:
+  publish_:
     runs-on: ubuntu-latest
     environment: Publish
     permissions:
@@ -51,7 +51,7 @@ jobs:
       - name: Generate Aptly config
         run: >
           jinja2 ./config/.aptly.conf.j2
-          -D repository=${{ inputs.repository_name }}
+          -D repository=${{ inputs.repository-name }}
           -D region=${{ secrets.AWS_DEFAULT_REGION }}
           -D bucket=${{ secrets.AWS_APTLY_BUCKET_NAME }}
           -o /tmp/.aptly.conf
@@ -67,7 +67,7 @@ jobs:
           echo -n ${{ secrets.APTLY_GPG_PRIVATE_KEY }} | base64 --decode | gpg1 --import
       - name: Publish new Snapshot
         run: |
-          aptly repo create -distribution=jammy -component=main -config=/tmp/.aptly.conf rivelin-source-dependencies
-          aptly repo add -config=/tmp/.aptly.conf ${{ inputs.repository_name }} rivelin-source-dependencies ${{ inputs.debian_path }}
-          aptly snapshot create -config=/tmp/.aptly.conf ${{ inputs.repository_name}}-${{ github.event.inputs.version }} from repo rivelin-source-dependencies
-          aptly -architectures=i386 publish snapshot -config=/tmp/.aptly.conf ${{ inputs.repository_name }}-${{ inputs.version }} s3:rivelin-source-dependencies-s3:.
+          aptly repo create -distribution=jammy -component=main -config=/tmp/.aptly.conf ${{ inputs.repository-name }}
+          aptly repo add -config=/tmp/.aptly.conf ${{ inputs.repository-name }} rivelin-source-dependencies ${{ inputs.debian_path }}
+          aptly snapshot create -config=/tmp/.aptly.conf ${{ inputs.repository-name}}-${{ inputs.version }} from repo rivelin-source-dependencies
+          aptly -architectures=i386 publish snapshot -config=/tmp/.aptly.conf ${{ inputs.repository-name }}-${{ inputs.version }} s3:${{ inputs.repository-name }}-s3:.
