@@ -14,11 +14,6 @@ on:
         required: true
         type: boolean
         description: "Update secrets after deploying."
-    secrets:
-      AWS_DEFAULT_REGION:
-        required: true
-      AWS_DEPLOYMENT_ROLE_ARN:
-        required: true
     outputs:
       aws-aptly-bucket-name:
         description: "The name of the S3 bucket hosting Aptly packages and the public key."
