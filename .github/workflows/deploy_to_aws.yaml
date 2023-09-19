@@ -8,12 +8,21 @@ on:
         required: true
         type: boolean
         description: "Update secrets after deploying."
+      deploy-domain:
+        required: true
+        type: boolean
+        default: true
+        description: "Deploy repository domain."
   workflow_call:
     inputs:
       update-secrets:
         required: true
         type: boolean
         description: "Update secrets after deploying."
+      deploy-domain:
+        required: true
+        type: boolean
+        description: "Deploy repository domain."
     outputs:
       aws-aptly-bucket-name:
         description: "The name of the S3 bucket hosting Aptly packages and the public key."
@@ -25,7 +34,6 @@ on:
         description: "The ARN of the role allowed to write a new public key to the S3 bucket."
         value: ${{ jobs.deploy-to-aws.outputs.aws-aptly-key-manager-role-arn }}
       
-
 jobs:
   deploy-to-aws:
     runs-on: ubuntu-latest
@@ -60,16 +68,19 @@ jobs:
           role-session-name: GithubRunnerDeployment
       - name: Bootstrap environment
         run: cdk bootstrap
-      - name: Synthesize stack
+      - name: Synthesize stacks
         run: cdk synth
-      - name: Deploy stack
+      - name: Deploy repository stack
         id: cdk
         run: |
-          cdk deploy --require-approval never AptlyRepositoryStack --outputs-file /tmp/cdk-outputs.json
           export CDK_STACK_NAME = "${{ env.GITHUB_REF }}AptlyRepositoryStack"
+          cdk deploy --require-approval never $CDK_STACK_NAME --outputs-file /tmp/cdk-outputs.json
           echo "aws-aptly-bucket-name=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.BucketName)" >> $GITHUB_OUTPUT
           echo "aws-aptly-publisher-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.PublisherRoleArn)" >> $GITHUB_OUTPUT
           echo "aws-aptly-key_manager-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.KeyManagerRoleArn)" >> $GITHUB_OUTPUT
+      - name: Deploy domain stack
+        if: ${{ github.events.inputs.deploy-domain }}
+        run: cdk deploy --require-approval never AptlyDomainStack
       - name: Update bucket secret (KeyRotation)
         if: ${{ github.events.inputs.update-secrets }}
         run: >
