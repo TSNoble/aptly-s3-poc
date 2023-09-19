@@ -5,7 +5,7 @@ on:
   workflow_dispatch
 
 jobs:
-  Destroy:
+  destroy:
     runs-on: ubuntu-latest
     environment: Deployment
     env:
