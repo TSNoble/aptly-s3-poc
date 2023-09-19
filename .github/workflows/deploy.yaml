@@ -16,10 +16,10 @@ on:
         description: "Update secrets after deploying."
     outputs:
       aws_aptly_bucket_name:
-        description: "The name of the S3 bucket hosting packages and the public key."
+        description: "The name of the S3 bucket hosting Aptly packages and the public key."
         value: ${{ jobs.deploy.outputs.aws_aptly_bucket_name }}
       aws_aptly_publisher_role_arn:
-        description: "The ARN of the role allowed to publish packages to the S3 bucket."
+        description: "The ARN of the role allowed to publish Aptly packages to the S3 bucket."
         value: ${{ jobs.deploy.outputs.aws_aptly_publisher_role_arn }}
       aws_aptly_key_manager_role_arn:
         description: "The ARN of the role allowed to write a new public key to the S3 bucket."
