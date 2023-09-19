@@ -4,9 +4,6 @@ name: Destroy Infrastructure
 on:
   workflow_dispatch:
   workflow_call:
-    secrets:
-      AWS_DEFAULT_REGION:
-        required: true
 
 jobs:
   destroy-infrastructure:
