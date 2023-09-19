@@ -25,7 +25,8 @@ repository = repository_stack.AptlyRepositoryStack(
 domain = domain_stack.AptlyDomainStack(
     scope=app,
     id=f"{github_branch}AptlyDomainStack",
-    aptly_repository_stack = repository,
+    aptly_repository_stack=repository,
+    domain="dev.downloads.rivel.in",
     env=us_east_dev_account,
 )
 
