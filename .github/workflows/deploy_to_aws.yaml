@@ -4,30 +4,30 @@ name: Deploy to AWS
 on:
   workflow_dispatch:
     inputs:
-      update_secrets:
+      update-secrets:
         required: true
         type: boolean
         description: "Update secrets after deploying."
   workflow_call:
     inputs:
-      update_secrets:
+      update-secrets:
         required: true
         type: boolean
         description: "Update secrets after deploying."
     outputs:
-      aws_aptly_bucket_name:
+      aws-aptly-bucket-name:
         description: "The name of the S3 bucket hosting Aptly packages and the public key."
         value: ${{ jobs.deploy.outputs.aws_aptly_bucket_name }}
-      aws_aptly_publisher_role_arn:
+      aws-aptly-publisher-role-arn:
         description: "The ARN of the role allowed to publish Aptly packages to the S3 bucket."
         value: ${{ jobs.deploy.outputs.aws_aptly_publisher_role_arn }}
-      aws_aptly_key_manager_role_arn:
+      aws-aptly-key-manager-role-arn:
         description: "The ARN of the role allowed to write a new public key to the S3 bucket."
         value: ${{ jobs.deploy.outputs.aws_aptly_key_manager_role_arn }}
       
 
 jobs:
-  deploy:
+  deploy-to-aws:
     runs-on: ubuntu-latest
     environment: Deployment
     env:
@@ -36,9 +36,9 @@ jobs:
       id-token: write
       contents: read
     outputs:
-      aws_aptly_bucket_name: ${{ steps.cdk.outputs.aws_aptly_bucket_name }}
-      aws_aptly_publisher_role_arn: ${{ steps.cdk.outputs.aws_aptly_publisher_role_arn }}
-      aws_aptly_key_manager_role_arn: ${{ steps.cdk.outputs.aws_aptly_key_manager_role_arn }}
+      aws-aptly-bucket-name: ${{ steps.cdk.outputs.aws-aptly-bucket-name }}
+      aws-aptly_publisher-role-arn: ${{ steps.cdk.outputs.aws-aptly-publisher-role_arn }}
+      aws-aptly-key-manager-role-arn: ${{ steps.cdk.outputs.aws-aptly-key-manager-role-arn }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -67,9 +67,9 @@ jobs:
         run: |
           cdk deploy --require-approval never AptlyRepositoryStack --outputs-file /tmp/cdk-outputs.json
           export CDK_STACK_NAME = "${{ env.GITHUB_REF }}AptlyRepositoryStack"
-          echo "aws_aptly_bucket_name=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.BucketName)" >> $GITHUB_OUTPUT
-          echo "aws_aptly_publisher_role_arn=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.PublisherRoleArn)" >> $GITHUB_OUTPUT
-          echo "aws_aptly_key_manager_role_arn=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.KeyManagerRoleArn)" >> $GITHUB_OUTPUT
+          echo "aws-aptly-bucket-name=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.BucketName)" >> $GITHUB_OUTPUT
+          echo "aws-aptly-publisher-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.PublisherRoleArn)" >> $GITHUB_OUTPUT
+          echo "aws-aptly-key_manager-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.KeyManagerRoleArn)" >> $GITHUB_OUTPUT
       - name: Update bucket secret (KeyRotation)
         if: ${{ inputs.update_secrets }}
         run: >
@@ -78,7 +78,7 @@ jobs:
           --environment KeyRotation
           --token ${{ secrets.REPOSITORY_PAT }}
           --name AWS_APTLY_BUCKET_NAME
-          --value ${{ steps.cdk.outputs.aws_aptly_bucket_name }}
+          --value ${{ steps.cdk.outputs.aws-aptly-bucket-name }}
       - name: Update key manager role secret
         if: ${{ inputs.update_secrets }}
         run: >
@@ -87,7 +87,7 @@ jobs:
           --environment KeyRotation
           --token ${{ secrets.REPOSITORY_PAT }}
           --name AWS_APTLY_KEY_MANAGER_ROLE_ARN
-          --value ${{ steps.cdk.outputs.aws_aptly_key_manager_role_arn }}
+          --value ${{ steps.cdk.outputs.aws-aptly-key-manager-role-arn }}
       - name: Update bucket secret (Publish)
         if: ${{ inputs.update_secrets }}
         run: >
@@ -96,7 +96,7 @@ jobs:
           --environment Publish
           --token ${{ secrets.REPOSITORY_PAT }}
           --name AWS_APTLY_BUCKET_NAME
-          --value ${{ steps.cdk.outputs.aws_aptly_bucket_name }}
+          --value ${{ steps.cdk.outputs.aws-aptly-bucket-name }}
       - name: Update publisher role secret
         if: ${{ inputs.update_secrets }}
         run: >
@@ -105,5 +105,5 @@ jobs:
           --environment Publish
           --token ${{ secrets.REPOSITORY_PAT }}
           --name AWS_APTLY_PUBLISHER_ROLE_ARN
-          --value ${{ steps.cdk.outputs.aws_aptly_publisher_role_arn }}
+          --value ${{ steps.cdk.outputs.aws-aptly-publisher-role-arn }}
       
