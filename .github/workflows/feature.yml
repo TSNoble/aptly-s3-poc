@@ -1,0 +1,25 @@
+---
+name: Deploy to AWS and Test
+
+on:
+  pull_request:
+    branches:
+      - "feature/**"
+      - "enhancement/**"
+      - "maintenance/**"
+      - "bugfix/**"
+      - "hotfix/**"
+  
+jobs:
+  deploy-to-aws:
+    uses: TSNoble/aptly-s3-poc/.github/workflows/deploy.yml@main
+    with:
+      update-secrets: false
+  run-tests:
+    uses: TSNoble/aptly-s3-poc/.github/workflows/test.yml@main
+    with:
+      aws-aptly-bucket-name: ${{ jobs.deploy-to-aws.outputs.aws-aptly-bucket-name }}
+      aws-aptly-publisher-role-arn: ${{ jobs.deploy-to-aws.outputs.aws-aptly-publisher-role-arn }}
+      aws-aptly-key-manager-role-arn: ${{ jobs.deploy-to-aws.outputs.aws-key-manager-role-arn }}
+  destroy-infrastructure:
+    uses: TSNoble/aptly-s3-poc/.github/workflows/destroy.yml@main
