@@ -7,13 +7,13 @@ on:
       update_secrets:
         required: true
         type: boolean
-        description: "Whether to update secrets from CDK outputs after deploying."
+        description: "Update secrets after deploying."
   workflow_call:
     inputs:
       update_secrets:
         required: true
         type: boolean
-        description: "Whether to update secrets from CDK outputs after deploying."
+        description: "Update secrets after deploying."
     outputs:
       aws_aptly_bucket_name:
         description: "The name of the S3 bucket hosting packages and the public key."
