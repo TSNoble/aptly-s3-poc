@@ -13,7 +13,6 @@ jobs:
       contents: read
     uses: TSNoble/aptly-s3-poc/.github/workflows/deploy_to_aws.yaml@main
     with:
-      update-secrets: false
       deploy-domain: false
     secrets: inherit
   run-tests:
