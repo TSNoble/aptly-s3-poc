@@ -73,7 +73,7 @@ jobs:
       - name: Deploy repository stack
         id: cdk
         run: |
-          export CDK_STACK_NAME = "${{ env.GITHUB_REF }}AptlyRepositoryStack"
+          export CDK_STACK_NAME="${{ env.GITHUB_REF }}AptlyRepositoryStack"
           cdk deploy --require-approval never $CDK_STACK_NAME --outputs-file /tmp/cdk-outputs.json
           echo "aws-aptly-bucket-name=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.BucketName)" >> $GITHUB_OUTPUT
           echo "aws-aptly-publisher-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.PublisherRoleArn)" >> $GITHUB_OUTPUT
