@@ -4,15 +4,15 @@ name: Test Infrastructure
 on:
   workflow_call:
     inputs:
-      aws_aptly_bucket_name:
+      aws-aptly-bucket-name:
         required: true
         type: string
         description: "The name of the S3 bucket hosting Aptly packages and the public key."
-      aws_aptly_publisher_role_arn:
+      aws-aptly-publisher-role-arn:
         required: true
         type: string
         description: "The ARN of the role allowed to publish Aptly packages to the S3 bucket."
-      aws_key_manager_role_arn:
+      aws-key-manager-role-arn:
         required: true
         type: string
         description: "The ARN of the role allowed to write a new public key to the S3 bucket."
