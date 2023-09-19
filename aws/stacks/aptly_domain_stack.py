@@ -12,13 +12,13 @@ from aws.stacks import (
 
 class AptlyDomainStack(Stack):
 
-    def __init__(self, scope: Construct, id: str, aptly_repository_stack: aptly_repository_stack.AptlyRepositoryStack, **kwargs) -> None:
+    def __init__(self, scope: Construct, id: str, aptly_repository_stack: domain: str, aptly_repository_stack.AptlyRepositoryStack, **kwargs) -> None:
         
         super().__init__(scope, id, **kwargs)
 
         self.domain = route53.HttpsS3Domain(
             scope=self,
             id="Domain",
-            domain="dev.downloads.rivel.in",
+            domain=domain,
             bucket=aptly_repository_stack.repository.bucket,
         )
