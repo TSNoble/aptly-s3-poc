@@ -14,8 +14,7 @@ jobs:
     uses: TSNoble/aptly-s3-poc/.github/workflows/deploy_to_aws.yaml@main
     with:
       update-secrets: false
-    secrets:
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+    secrets: inherit
   run-tests:
     needs: deploy-to-aws
     permissions:
