@@ -14,6 +14,8 @@ jobs:
     uses: TSNoble/aptly-s3-poc/.github/workflows/deploy_to_aws.yaml@main
     with:
       update-secrets: false
+    secrets:
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
   run-tests:
     needs: deploy-to-aws
     permissions:
@@ -24,9 +26,13 @@ jobs:
       aws-aptly-bucket-name: ${{ needs.deploy-to-aws.outputs.aws-aptly-bucket-name }}
       aws-aptly-publisher-role-arn: ${{ needs.deploy-to-aws.outputs.aws-aptly-publisher-role-arn }}
       aws-aptly-key-manager-role-arn: ${{ needs.deploy-to-aws.outputs.aws-key-manager-role-arn }}
+    secrets:
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
   destroy-infrastructure:
     needs: run-tests
     permissions:
       id-token: write
       contents: read
     uses: TSNoble/aptly-s3-poc/.github/workflows/destroy_infrastructure.yaml@main
+    secrets:
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
