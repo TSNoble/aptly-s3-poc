@@ -16,7 +16,7 @@ class AptlyRepositoryStack(Stack):
         
         super().__init__(scope, id, **kwargs)
 
-        repository = aptly.AptlyRepository(
+        self.repository = aptly.AptlyRepository(
             scope=self,
             id="AptlyRepository",
         )
@@ -39,14 +39,14 @@ class AptlyRepositoryStack(Stack):
             environment="Publish",
         )
 
-        read_only_group = iam.Group(
+        self.read_only_group = iam.Group(
             scope=self,
             id="ReadOnlyGroup",
         )
 
         repository.grant_read_package(read_only_group)
 
-        read_only_role = iam.Role(
+        self.read_only_role = iam.Role(
             scope=self,
             id="ReadOnlyRole",
             assumed_by=github_publisher_principal,
@@ -55,7 +55,7 @@ class AptlyRepositoryStack(Stack):
 
         repository.grant_read_package(read_only_role)
         
-        publisher_role = iam.Role(
+        self.publisher_role = iam.Role(
             scope=self,
             id="PublisherRole",
             assumed_by=github_publisher_principal,
@@ -70,7 +70,7 @@ class AptlyRepositoryStack(Stack):
             environment="KeyRotation",
         )
 
-        key_manager_role = iam.Role(
+        self.key_manager_role = iam.Role(
             scope=self,
             id="KeyManagerRole",
             assumed_by=github_key_manager_principal,
