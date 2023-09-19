@@ -4,11 +4,36 @@ name: Publish Snapshot
 on:
   workflow_dispatch:
     inputs:
-      version:
+      repository_name:
+        required: true
         type: string
-        description: The version of the snapshot
+        default: "rivelin-source-dependencies"
+        description: "The name of the Aptly repository."
+      debian_path:
+        required: true
+        type: string
+        default: "debs"
+        description: "The path to the .deb packages."
+      version:
+        required: true
+        type: string
+        description: "The version of the snapshot."
+  workflow_call:
+    inputs:
+      repository_name:
+        required: true
+        type: string
+        description: "The name of the Aptly repository."
+      debian_path:
+        required: true
+        type: string
+        description: "The path to the .deb packages."
+      version:
+        required: true
+        type: string
+        description: "The version of the snapshot."
 jobs:
-  Publish:
+  publish:
     runs-on: ubuntu-latest
     environment: Publish
     permissions:
@@ -26,6 +51,7 @@ jobs:
       - name: Generate Aptly config
         run: >
           jinja2 ./config/.aptly.conf.j2
+          -D repository=${{ inputs.repository_name }}
           -D region=${{ secrets.AWS_DEFAULT_REGION }}
           -D bucket=${{ secrets.AWS_APTLY_BUCKET_NAME }}
           -o /tmp/.aptly.conf
@@ -42,6 +68,6 @@ jobs:
       - name: Publish new Snapshot
         run: |
           aptly repo create -distribution=jammy -component=main -config=/tmp/.aptly.conf rivelin-source-dependencies
-          aptly repo add -config=/tmp/.aptly.conf rivelin-source-dependencies debs
-          aptly snapshot create -config=/tmp/.aptly.conf rivelin-source-dependencies-${{ github.event.inputs.version }} from repo rivelin-source-dependencies
-          aptly -architectures=i386 publish snapshot -config=/tmp/.aptly.conf rivelin-source-dependencies-${{ github.event.inputs.version }} s3:rivelin-source-dependencies-s3:.
+          aptly repo add -config=/tmp/.aptly.conf ${{ inputs.repository_name }} rivelin-source-dependencies ${{ inputs.debian_path }}
+          aptly snapshot create -config=/tmp/.aptly.conf ${{ inputs.repository_name}}-${{ github.event.inputs.version }} from repo rivelin-source-dependencies
+          aptly -architectures=i386 publish snapshot -config=/tmp/.aptly.conf ${{ inputs.repository_name }}-${{ inputs.version }} s3:rivelin-source-dependencies-s3:.
