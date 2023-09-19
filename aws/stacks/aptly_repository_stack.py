@@ -24,7 +24,7 @@ class AptlyRepositoryStack(Stack):
         CfnOutput(
             scope=self,
             id="BucketName",
-            value=repository.bucket.bucket_name,
+            value=self.repository.bucket.bucket_name,
         )
 
         github_provider = iam.OpenIdConnectProvider.from_open_id_connect_provider_arn(
@@ -83,10 +83,10 @@ class AptlyRepositoryStack(Stack):
             value=publisher_role.role_arn,
         )
 
-        repository.grant_update_key(key_manager_role)
+        repository.grant_update_key(self.key_manager_role)
 
         CfnOutput(
             scope=self,
             id="KeyManagerRoleArn",
-            value=key_manager_role.role_arn,
+            value=self.key_manager_role.role_arn,
         )
