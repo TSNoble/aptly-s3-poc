@@ -1,0 +1,64 @@
+---
+name: Merge to Master
+
+on:
+  push:
+    branches:
+      - main
+  
+jobs:
+  deploy-to-aws:
+    permissions:
+      id-token: write
+      contents: read
+    uses: TSNoble/aptly-s3-poc/.github/workflows/deploy_to_aws.yaml@main
+    with:
+      deploy-domain: true
+    secrets: inherit
+  run-tests:
+    needs: deploy-to-aws
+    permissions:
+      id-token: write
+      contents: read
+    uses: TSNoble/aptly-s3-poc/.github/workflows/test_infrastructure.yaml@main
+    with:
+      aws-aptly-bucket-name: ${{ needs.deploy-to-aws.outputs.aws-aptly-bucket-name }}
+      aws-aptly-publisher-role-arn: ${{ needs.deploy-to-aws.outputs.aws-aptly-publisher-role-arn }}
+      aws-aptly-key-manager-role-arn: ${{ needs.deploy-to-aws.outputs.aws-key-manager-role-arn }}
+    secrets: inherit
+  update-secrets:
+    runs-on: ubuntu-latest
+    needs: run-tests
+    steps:
+      - name: Update bucket secret (KeyRotation)
+        run: >
+          invoke create-github-secret
+          --repo ${{ github.repository_id }}
+          --environment KeyRotation
+          --token ${{ secrets.REPOSITORY_PAT }}
+          --name AWS_APTLY_BUCKET_NAME
+          --value ${{ needs.deploy-to-aws.outputs.aws-aptly-bucket-name }}
+      - name: Update key manager role secret (KeyRotation)
+        run: >
+          invoke create-github-secret
+          --repo ${{ github.repository_id }}
+          --environment KeyRotation
+          --token ${{ secrets.REPOSITORY_PAT }}
+          --name AWS_APTLY_KEY_MANAGER_ROLE_ARN
+          --value ${{ needs.deploy-to-aws.outputs.aws-aptly-key-manager-role-arn }}
+      - name: Update bucket secret (Publish)
+        run: >
+          invoke create-github-secret
+          --repo ${{ github.repository_id }}
+          --environment Publish
+          --token ${{ secrets.REPOSITORY_PAT }}
+          --name AWS_APTLY_BUCKET_NAME
+          --value ${{ needs.deploy-to-aws.outputs.aws-aptly-bucket-name }}
+      - name: Update publisher role secret (Publish)
+        run: >
+          invoke create-github-secret
+          --repo ${{ github.repository_id }}
+          --environment Publish
+          --token ${{ secrets.REPOSITORY_PAT }}
+          --name AWS_APTLY_PUBLISHER_ROLE_ARN
+          --value ${{ needs.deploy-to-aws.outputs.aws-aptly-publisher-role-arn }}

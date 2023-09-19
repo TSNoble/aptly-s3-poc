@@ -32,4 +32,4 @@ jobs:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           role-session-name: GithubRunnerTeardown
       - name: Destroy stack
-        run: cdk destroy --force AptlyRepositoryStack
+        run: cdk destroy --force *

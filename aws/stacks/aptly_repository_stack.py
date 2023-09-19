@@ -16,7 +16,7 @@ class AptlyRepositoryStack(Stack):
         
         super().__init__(scope, id, **kwargs)
 
-        repository = aptly.AptlyRepository(
+        self.repository = aptly.AptlyRepository(
             scope=self,
             id="AptlyRepository",
         )
@@ -24,7 +24,7 @@ class AptlyRepositoryStack(Stack):
         CfnOutput(
             scope=self,
             id="BucketName",
-            value=repository.bucket.bucket_name,
+            value=self.repository.bucket.bucket_name,
         )
 
         github_provider = iam.OpenIdConnectProvider.from_open_id_connect_provider_arn(
@@ -39,30 +39,30 @@ class AptlyRepositoryStack(Stack):
             environment="Publish",
         )
 
-        read_only_group = iam.Group(
+        self.read_only_group = iam.Group(
             scope=self,
             id="ReadOnlyGroup",
         )
 
-        repository.grant_read_package(read_only_group)
+        self.repository.grant_read_package(self.read_only_group)
 
-        read_only_role = iam.Role(
+        self.read_only_role = iam.Role(
             scope=self,
             id="ReadOnlyRole",
             assumed_by=github_publisher_principal,
             description="A role granting read-only access to the Aptly repository."
         )
 
-        repository.grant_read_package(read_only_role)
+        self.repository.grant_read_package(self.read_only_role)
         
-        publisher_role = iam.Role(
+        self.publisher_role = iam.Role(
             scope=self,
             id="PublisherRole",
             assumed_by=github_publisher_principal,
             description="A role granting write-only access to the Aptly repository."
         )
 
-        repository.grant_publish_package(publisher_role)
+        self.repository.grant_publish_package(self.publisher_role)
 
         github_key_manager_principal = github.GitHubOIDCPrincipal(
             provider=github_provider,
@@ -70,7 +70,7 @@ class AptlyRepositoryStack(Stack):
             environment="KeyRotation",
         )
 
-        key_manager_role = iam.Role(
+        self.key_manager_role = iam.Role(
             scope=self,
             id="KeyManagerRole",
             assumed_by=github_key_manager_principal,
@@ -80,13 +80,13 @@ class AptlyRepositoryStack(Stack):
         CfnOutput(
             scope=self,
             id="PublisherRoleArn",
-            value=publisher_role.role_arn,
+            value=self.publisher_role.role_arn,
         )
 
-        repository.grant_update_key(key_manager_role)
+        self.repository.grant_update_key(self.key_manager_role)
 
         CfnOutput(
             scope=self,
             id="KeyManagerRoleArn",
-            value=key_manager_role.role_arn,
+            value=self.key_manager_role.role_arn,
         )
