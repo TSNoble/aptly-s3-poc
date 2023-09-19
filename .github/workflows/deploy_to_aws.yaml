@@ -70,6 +70,8 @@ jobs:
           echo "aws-aptly-bucket-name=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.BucketName)" >> $GITHUB_OUTPUT
           echo "aws-aptly-publisher-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.PublisherRoleArn)" >> $GITHUB_OUTPUT
           echo "aws-aptly-key_manager-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.KeyManagerRoleArn)" >> $GITHUB_OUTPUT
+      - name: Deploy GitHub permissions stack
+        run: cdk deploy --require-approval never AptlyGitHubStack
       - name: Deploy domain stack
         if: ${{ github.events.inputs.deploy-domain }}
         run: cdk deploy --require-approval never AptlyDomainStack
