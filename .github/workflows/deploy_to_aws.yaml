@@ -4,10 +4,6 @@ name: Deploy to AWS
 on:
   workflow_dispatch:
     inputs:
-      update-secrets:
-        required: true
-        type: boolean
-        description: "Update secrets after deploying."
       deploy-domain:
         required: true
         type: boolean
@@ -15,10 +11,6 @@ on:
         description: "Deploy repository domain."
   workflow_call:
     inputs:
-      update-secrets:
-        required: true
-        type: boolean
-        description: "Update secrets after deploying."
       deploy-domain:
         required: true
         type: boolean
@@ -81,40 +73,4 @@ jobs:
       - name: Deploy domain stack
         if: ${{ github.events.inputs.deploy-domain }}
         run: cdk deploy --require-approval never AptlyDomainStack
-      - name: Update bucket secret (KeyRotation)
-        if: ${{ github.events.inputs.update-secrets }}
-        run: >
-          invoke create-github-secret
-          --repo ${{ github.repository_id }}
-          --environment KeyRotation
-          --token ${{ secrets.REPOSITORY_PAT }}
-          --name AWS_APTLY_BUCKET_NAME
-          --value ${{ steps.cdk.outputs.aws-aptly-bucket-name }}
-      - name: Update key manager role secret
-        if: ${{ github.events.inputs.update-secrets }}
-        run: >
-          invoke create-github-secret
-          --repo ${{ github.repository_id }}
-          --environment KeyRotation
-          --token ${{ secrets.REPOSITORY_PAT }}
-          --name AWS_APTLY_KEY_MANAGER_ROLE_ARN
-          --value ${{ steps.cdk.outputs.aws-aptly-key-manager-role-arn }}
-      - name: Update bucket secret (Publish)
-        if: ${{ github.events.inputs.update-secrets }}
-        run: >
-          invoke create-github-secret
-          --repo ${{ github.repository_id }}
-          --environment Publish
-          --token ${{ secrets.REPOSITORY_PAT }}
-          --name AWS_APTLY_BUCKET_NAME
-          --value ${{ steps.cdk.outputs.aws-aptly-bucket-name }}
-      - name: Update publisher role secret
-        if: ${{ github.events.inputs.update-secrets }}
-        run: >
-          invoke create-github-secret
-          --repo ${{ github.repository_id }}
-          --environment Publish
-          --token ${{ secrets.REPOSITORY_PAT }}
-          --name AWS_APTLY_PUBLISHER_ROLE_ARN
-          --value ${{ steps.cdk.outputs.aws-aptly-publisher-role-arn }}
       
