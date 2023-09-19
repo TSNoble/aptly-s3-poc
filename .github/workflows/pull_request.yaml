@@ -15,6 +15,7 @@ jobs:
     with:
       update-secrets: false
   run-tests:
+    needs: deploy-to-aws
     permissions:
       id-token: write
       contents: read
@@ -24,6 +25,7 @@ jobs:
       aws-aptly-publisher-role-arn: ${{ needs.deploy-to-aws.outputs.aws-aptly-publisher-role-arn }}
       aws-aptly-key-manager-role-arn: ${{ needs.deploy-to-aws.outputs.aws-key-manager-role-arn }}
   destroy-infrastructure:
+    needs: run-tests
     permissions:
       id-token: write
       contents: read
