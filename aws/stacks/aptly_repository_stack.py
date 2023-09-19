@@ -24,7 +24,7 @@ class AptlyRepositoryStack(Stack):
         CfnOutput(
             scope=self,
             id="BucketName",
-            value=repository.bucket.bucket_name,
+            value=self.repository.bucket.bucket_name,
         )
 
         github_provider = iam.OpenIdConnectProvider.from_open_id_connect_provider_arn(
