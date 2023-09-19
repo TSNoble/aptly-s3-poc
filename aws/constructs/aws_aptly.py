@@ -35,13 +35,6 @@ class AptlyRepository(Construct):
             file=Path.cwd().absolute() / "config/index.html",
         )
 
-        self.domain = route53.HttpsS3Domain(
-            scope=self,
-            id="Domain",
-            domain="dev.downloads.rivel.in",
-            bucket=self.bucket,
-        )
-
     def grant_read_package(self, principal: iam.IGrantable):
         """ Grants a `principal` permission to read packages."""
         self.bucket.grant_read(
