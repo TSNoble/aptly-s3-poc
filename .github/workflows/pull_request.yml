@@ -1,5 +1,5 @@
 ---
-name: Deploy to AWS and Test
+name: Pull Request
 
 on:
   pull_request:
