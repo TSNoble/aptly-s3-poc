@@ -44,7 +44,7 @@ class AptlyRepositoryStack(Stack):
             id="ReadOnlyGroup",
         )
 
-        repository.grant_read_package(read_only_group)
+        self.repository.grant_read_package(self.read_only_group)
 
         self.read_only_role = iam.Role(
             scope=self,
@@ -53,7 +53,7 @@ class AptlyRepositoryStack(Stack):
             description="A role granting read-only access to the Aptly repository."
         )
 
-        repository.grant_read_package(read_only_role)
+        self.repository.grant_read_package(self.read_only_role)
         
         self.publisher_role = iam.Role(
             scope=self,
@@ -62,7 +62,7 @@ class AptlyRepositoryStack(Stack):
             description="A role granting write-only access to the Aptly repository."
         )
 
-        repository.grant_publish_package(publisher_role)
+        self.repository.grant_publish_package(self.publisher_role)
 
         github_key_manager_principal = github.GitHubOIDCPrincipal(
             provider=github_provider,
@@ -83,10 +83,10 @@ class AptlyRepositoryStack(Stack):
             value=publisher_role.role_arn,
         )
 
-        repository.grant_update_key(key_manager_role)
+        repository.grant_update_key(self.key_manager_role)
 
         CfnOutput(
             scope=self,
             id="KeyManagerRoleArn",
-            value=key_manager_role.role_arn,
+            value=self.key_manager_role.role_arn,
         )
