@@ -18,7 +18,7 @@ on:
         description: "The ARN of the role allowed to write a new public key to the S3 bucket."
 
 jobs:
-  test:
+  test-:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
