@@ -6,6 +6,7 @@ import aws_cdk as cdk
 from aws.stacks import (
     aptly_repository_stack as repository_stack,
     aptly_domain_stack as domain_stack,
+    github_permissions_stack as github_stack,
 )
 
 
@@ -18,7 +19,6 @@ us_east_dev_account = env=cdk.Environment(account="778015471639", region="us-eas
 repository = repository_stack.AptlyRepositoryStack(
     scope=app,
     id=f"{github_branch}AptlyRepositoryStack",
-    github_provider_arn=github_provider_arn,
     env=us_east_dev_account,
 )
 
