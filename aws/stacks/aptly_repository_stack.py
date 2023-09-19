@@ -83,7 +83,7 @@ class AptlyRepositoryStack(Stack):
             value=self.publisher_role.role_arn,
         )
 
-        repository.grant_update_key(self.key_manager_role)
+        self.repository.grant_update_key(self.key_manager_role)
 
         CfnOutput(
             scope=self,
