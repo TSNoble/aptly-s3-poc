@@ -11,7 +11,7 @@ from aws.stacks import (
 
 app = cdk.App()
 
-github_branch = os.getenv("GITHUB_REF", default="")
+github_branch = os.getenv("GITHUB_HEAD_REF", default="")
 github_provider_arn = os.environ["AWS_GITHUB_PROVIDER_ARN"]
 us_east_dev_account = env=cdk.Environment(account="778015471639", region="us-east-1")
 
