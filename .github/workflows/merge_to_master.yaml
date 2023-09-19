@@ -1,0 +1,28 @@
+---
+name: Merge to Master
+
+on:
+  push:
+    branches:
+      - main
+  
+jobs:
+  deploy-to-aws:
+    permissions:
+      id-token: write
+      contents: read
+    uses: TSNoble/aptly-s3-poc/.github/workflows/deploy_to_aws.yaml@main
+    with:
+      deploy-domain: true
+    secrets: inherit
+  run-tests:
+    needs: deploy-to-aws
+    permissions:
+      id-token: write
+      contents: read
+    uses: TSNoble/aptly-s3-poc/.github/workflows/test_infrastructure.yaml@main
+    with:
+      aws-aptly-bucket-name: ${{ needs.deploy-to-aws.outputs.aws-aptly-bucket-name }}
+      aws-aptly-publisher-role-arn: ${{ needs.deploy-to-aws.outputs.aws-aptly-publisher-role-arn }}
+      aws-aptly-key-manager-role-arn: ${{ needs.deploy-to-aws.outputs.aws-key-manager-role-arn }}
+    secrets: inherit
