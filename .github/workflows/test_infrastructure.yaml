@@ -16,6 +16,9 @@ on:
         required: true
         type: string
         description: "The ARN of the role allowed to write a new public key to the S3 bucket."
+    secrets:
+      AWS_DEFAULT_REGION:
+        required: true
 
 jobs:
   test-infrastructure:
