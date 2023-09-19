@@ -30,4 +30,14 @@ domain = domain_stack.AptlyDomainStack(
     env=us_east_dev_account,
 )
 
+github = github_stack.GithubPermissionsStack(
+    scope=app,
+    id=f"{github_branch}AptlyGitHubStack",
+    github_provider_arn=github_provider_arn,
+    readers=[("TSNoble/aptly-s3-poc", "Test")],
+    writers=[("TSNoble/aptly-s3-poc", "Publish")],
+    key_managers=[("TSNoble/aptly-s3-poc", "KeyRotation")],
+    env=us_east_dev_account,
+)
+
 app.synth()
