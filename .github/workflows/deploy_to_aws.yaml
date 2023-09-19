@@ -17,13 +17,13 @@ on:
     outputs:
       aws-aptly-bucket-name:
         description: "The name of the S3 bucket hosting Aptly packages and the public key."
-        value: ${{ jobs.deploy.outputs.aws_aptly_bucket_name }}
+        value: ${{ jobs.deploy-to-aws.outputs.aws-aptly-bucket-name }}
       aws-aptly-publisher-role-arn:
         description: "The ARN of the role allowed to publish Aptly packages to the S3 bucket."
-        value: ${{ jobs.deploy.outputs.aws_aptly_publisher_role_arn }}
+        value: ${{ jobs.deploy-to-aws.outputs.aws-aptly-publisher-role-arn }}
       aws-aptly-key-manager-role-arn:
         description: "The ARN of the role allowed to write a new public key to the S3 bucket."
-        value: ${{ jobs.deploy.outputs.aws_aptly_key_manager_role_arn }}
+        value: ${{ jobs.deploy-to-aws.outputs.aws-aptly-key-manager-role-arn }}
       
 
 jobs:
@@ -71,7 +71,7 @@ jobs:
           echo "aws-aptly-publisher-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.PublisherRoleArn)" >> $GITHUB_OUTPUT
           echo "aws-aptly-key_manager-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.KeyManagerRoleArn)" >> $GITHUB_OUTPUT
       - name: Update bucket secret (KeyRotation)
-        if: ${{ inputs.update_secrets }}
+        if: ${{ github.events.inputs.update-secrets }}
         run: >
           invoke create-github-secret
           --repo ${{ github.repository_id }}
@@ -80,7 +80,7 @@ jobs:
           --name AWS_APTLY_BUCKET_NAME
           --value ${{ steps.cdk.outputs.aws-aptly-bucket-name }}
       - name: Update key manager role secret
-        if: ${{ inputs.update_secrets }}
+        if: ${{ github.events.inputs.update-secrets }}
         run: >
           invoke create-github-secret
           --repo ${{ github.repository_id }}
@@ -89,7 +89,7 @@ jobs:
           --name AWS_APTLY_KEY_MANAGER_ROLE_ARN
           --value ${{ steps.cdk.outputs.aws-aptly-key-manager-role-arn }}
       - name: Update bucket secret (Publish)
-        if: ${{ inputs.update_secrets }}
+        if: ${{ github.events.inputs.update-secrets }}
         run: >
           invoke create-github-secret
           --repo ${{ github.repository_id }}
@@ -98,7 +98,7 @@ jobs:
           --name AWS_APTLY_BUCKET_NAME
           --value ${{ steps.cdk.outputs.aws-aptly-bucket-name }}
       - name: Update publisher role secret
-        if: ${{ inputs.update_secrets }}
+        if: ${{ github.events.inputs.update-secrets }}
         run: >
           invoke create-github-secret
           --repo ${{ github.repository_id }}
