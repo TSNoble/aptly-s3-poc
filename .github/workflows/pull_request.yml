@@ -4,11 +4,7 @@ name: Pull Request
 on:
   pull_request:
     branches:
-      - "feature/**"
-      - "enhancement/**"
-      - "maintenance/**"
-      - "bugfix/**"
-      - "hotfix/**"
+      - main
   
 jobs:
   deploy-to-aws:
