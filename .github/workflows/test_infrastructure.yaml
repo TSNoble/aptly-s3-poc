@@ -31,4 +31,7 @@ jobs:
           pip3 install -r requirements.txt
           pip3 install -r requirements-dev.txt
       - name: Run tests
+        env:
+          AWS_APTLY_BUCKET_NAME: ${{ inputs.aws-aptly-bucket-name }}
+          AWS_APTLY_KEY_MANAGER_ROLE_ARN: ${{ inputs.aws-aptly-key-manager-role-arn }}
         run: pytest
