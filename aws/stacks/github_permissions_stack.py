@@ -46,7 +46,7 @@ class GithubPermissionsStack(Stack):
           )
           aptly_repository_stack.read_only_role.grant_assume(principal)
 
-      for publisher in publishers:
+        for publisher in publishers:
           repository, environment = publisher
           principal = github.OIDCGitHubPrincipal(
             provider = github_provider,
@@ -55,11 +55,11 @@ class GithubPermissionsStack(Stack):
           )
           aptly_repository_stack.publisher_role.grant_assume(principal)
 
-      for manager in key_managers:
-        repository, environment = manager
-        principal = github.OIDCGitHubPrincipal(
-          provider = github_provider,
-          repository = repository,
-          environment = environment,
-        )
-        aptly_repository_stack.key_manager_role.grant_assume(principal)
+        for manager in key_managers:
+          repository, environment = manager
+          principal = github.OIDCGitHubPrincipal(
+            provider = github_provider,
+            repository = repository,
+            environment = environment,
+          )
+          aptly_repository_stack.key_manager_role.grant_assume(principal)
