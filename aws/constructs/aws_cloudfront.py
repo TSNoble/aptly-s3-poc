@@ -10,15 +10,15 @@ from aws_cdk import (
 
 
 class HttpsS3Distribution(cloudfront.Distribution):
-
     def __init__(self, bucket: s3.Bucket, *args, **kwargs):
-        
         auth_lambda = cloudfront.experimental.EdgeFunction(
             scope=kwargs["scope"],
             id=f"{kwargs['id']}HttpsAuthLambda",
             runtime=lambda_.Runtime.PYTHON_3_11,
             handler="https_auth.handler",
-            code=lambda_.Code.from_asset(str(Path.cwd().absolute() / "aws/lambdas/auth")),
+            code=lambda_.Code.from_asset(
+                str(Path.cwd().absolute() / "aws/lambdas/auth")
+            ),
             timeout=Duration.seconds(10),
         )
 

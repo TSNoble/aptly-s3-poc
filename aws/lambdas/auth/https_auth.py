@@ -33,5 +33,3 @@ def handler(event, _):
         logging.error(e)
         raise e
     return request
-    
-

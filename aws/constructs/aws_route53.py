@@ -10,9 +10,7 @@ from aws.constructs import (
 
 
 class HttpsS3Domain(route53.PublicHostedZone):
-
     def __init__(self, domain: str, bucket: s3.Bucket, *args, **kwargs):
-        
         distribution = cloudfront.HttpsS3Distribution(
             scope=kwargs["scope"],
             id=f"{kwargs['id']}Distribution",
@@ -33,5 +31,5 @@ class HttpsS3Domain(route53.PublicHostedZone):
                 alias_target=targets.CloudFrontTarget(
                     distribution=distribution,
                 )
-            )    
+            ),
         )
