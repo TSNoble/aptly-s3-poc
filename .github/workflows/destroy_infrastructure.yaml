@@ -23,7 +23,7 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: |
-          npm install -g aws-cdk
+          npm install
           pip3 install -r requirements.txt
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
@@ -32,4 +32,4 @@ jobs:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           role-session-name: GithubRunnerTeardown
       - name: Destroy stack
-        run: cdk destroy --force *
+        run: npx cdk destroy --force *

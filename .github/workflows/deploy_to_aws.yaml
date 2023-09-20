@@ -49,7 +49,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get install -y jq
-          npm install -g aws-cdk
+          npm install
           pip3 install -r requirements.txt
           pip3 install -r requirements-dev.txt
       - name: Configure AWS credentials
@@ -58,21 +58,19 @@ jobs:
           role-to-assume: ${{ secrets.AWS_DEPLOYMENT_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           role-session-name: GithubRunnerDeployment
-      - name: Bootstrap environment
-        run: cdk bootstrap
       - name: Synthesize stacks
-        run: cdk synth
+        run: npx cdk synth
       - name: Deploy repository stack
         id: cdk
         run: |
           export CDK_STACK_NAME="${{ env.GITHUB_HEAD_REF }}AptlyRepositoryStack"
-          cdk deploy --require-approval never $CDK_STACK_NAME --outputs-file /tmp/cdk-outputs.json
+          npx cdk deploy --require-approval never $CDK_STACK_NAME --outputs-file /tmp/cdk-outputs.json
           echo "aws-aptly-bucket-name=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.BucketName)" >> $GITHUB_OUTPUT
           echo "aws-aptly-publisher-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.PublisherRoleArn)" >> $GITHUB_OUTPUT
           echo "aws-aptly-key_manager-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.KeyManagerRoleArn)" >> $GITHUB_OUTPUT
       - name: Deploy GitHub permissions stack
-        run: cdk deploy --require-approval never AptlyGitHubStack
+        run: npx cdk deploy --require-approval never AptlyGitHubStack
       - name: Deploy domain stack
         if: ${{ github.events.inputs.deploy-domain }}
-        run: cdk deploy --require-approval never AptlyDomainStack
+        run: npx cdk deploy --require-approval never AptlyDomainStack
       

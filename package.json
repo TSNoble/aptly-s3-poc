@@ -1,0 +1,7 @@
+{
+    "name": "aptly-s3-poc",
+    "version": "0.0.1",
+    "dependencies": {
+      "aws-cdk": "^2.96.2"
+    }
+}
