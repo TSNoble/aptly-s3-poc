@@ -1,5 +1,5 @@
 import pytest
 
 
-def sample_test():
+def test_sample():
     assert True
