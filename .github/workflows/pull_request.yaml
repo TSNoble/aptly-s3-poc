@@ -27,3 +27,11 @@ jobs:
       aws-aptly-publisher-role-arn: ${{ needs.deploy-to-aws.outputs.aws-aptly-publisher-role-arn }}
       aws-aptly-key-manager-role-arn: ${{ needs.deploy-to-aws.outputs.aws-key-manager-role-arn }}
     secrets: inherit
+  destroy-stack:
+    permissions:
+      id-token: write
+      contents: read
+    uses: TSNoble/aptly-s3-poc/.github/workflows/destroy_stack.yaml@main
+    with:
+      stack-name: AptlyRepositoryStack
+      add-branch-suffix: true

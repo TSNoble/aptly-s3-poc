@@ -1,0 +1,58 @@
+---
+name: Destroy Stack
+
+on:
+  workflow_dispatch:
+      inputs:
+        stack-name:
+          required: true
+          type: string
+          description: "Name of the stack to destroy."
+        add-branch-suffix:
+          required: true
+          type: boolean
+          default: false
+          description: "Add branch hash as stack suffix."
+  workflow_call:
+      inputs:
+        stack-name:
+          required: true
+          type: string
+          description: "Name of the stack to destroy."
+        add-branch-suffix:
+          required: true
+          type: boolean
+          default: false
+          description: "Add branch hash as stack suffix."
+
+jobs:
+  destroy-stack:
+    runs-on: ubuntu-latest
+    environment: Deployment
+    env:
+      AWS_GITHUB_PROVIDER_ARN: ${{ secrets.AWS_GITHUB_PROVIDER_ARN }}
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: |
+          npm install
+          pip3 install -r requirements.txt
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOYMENT_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          role-session-name: GithubRunnerTeardown
+      - name: Get stack suffix
+        if: ${{ inputs.add-branch-suffix }}
+        run: echo "STACK_SUFFIX=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+      - name: Destroy stack
+        run: npx cdk destroy --force ${{ inputs.stack-name }}${STACK_SUFFIX}
