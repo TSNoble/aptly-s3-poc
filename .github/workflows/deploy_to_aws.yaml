@@ -59,6 +59,8 @@ jobs:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           role-session-name: GithubRunnerDeployment
       - name: Synthesize stacks
+        env: 
+          STACK_PREFIX: ${{ github.event.pull_request.head.ref.GITHUB_HEAD_REF }}
         run: npx cdk synth
       - name: Deploy repository stack
         id: cdk
