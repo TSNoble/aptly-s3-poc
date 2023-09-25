@@ -35,17 +35,17 @@ jobs:
         uses: actions/checkout@v3
       - name: Install dependencies
         run: |
-          echo Bucket=${{ needs.deploy-to-aws.outputs.aws-aptly-bucket-name }}
           pip3 install -r requirements.txt
           pip3 install -r requirements-dev.txt
       - name: Update bucket secret (KeyRotation)
-        run: >
-          invoke create-github-secret
-          --repo ${{ github.repository_id }}
-          --environment KeyRotation
-          --token ${{ secrets.REPOSITORY_PAT }}
-          --name AWS_APTLY_BUCKET_NAME
-          --value ${{ needs.deploy-to-aws.outputs.aws-aptly-bucket-name }}
+        run: |
+          echo Bucket=${{ needs.deploy-to-aws.outputs.aws-aptly-bucket-name }}
+          invoke create-github-secret \
+            --repo ${{ github.repository_id }} \
+            --environment KeyRotation \
+            --token ${{ secrets.REPOSITORY_PAT }} \
+            --name AWS_APTLY_BUCKET_NAME \
+            --value ${{ needs.deploy-to-aws.outputs.aws-aptly-bucket-name }}
       - name: Update key manager role secret (KeyRotation)
         run: >
           invoke create-github-secret
