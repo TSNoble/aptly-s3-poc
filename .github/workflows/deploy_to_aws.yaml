@@ -47,7 +47,7 @@ jobs:
       contents: read
     outputs:
       aws-aptly-bucket-name: ${{ steps.cdk.outputs.aws-aptly-bucket-name }}
-      aws-aptly_publisher-role-arn: ${{ steps.cdk.outputs.aws-aptly-publisher-role_arn }}
+      aws-aptly_publisher-role-arn: ${{ steps.cdk.outputs.aws-aptly-publisher-role-arn }}
       aws-aptly-key-manager-role-arn: ${{ steps.cdk.outputs.aws-aptly-key-manager-role-arn }}
     steps:
       - name: Checkout repository
@@ -80,7 +80,7 @@ jobs:
           npx cdk deploy --require-approval never ${CDK_STACK_NAME} --outputs-file /tmp/cdk-outputs.json
           echo "aws-aptly-bucket-name=$(cat /tmp/cdk-outputs.json | jq -r .${CDK_STACK_NAME}.BucketName)" >> $GITHUB_OUTPUT
           echo "aws-aptly-publisher-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .${CDK_STACK_NAME}.PublisherRoleArn)" >> $GITHUB_OUTPUT
-          echo "aws-aptly-key_manager-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .${CDK_STACK_NAME}.KeyManagerRoleArn)" >> $GITHUB_OUTPUT
+          echo "aws-aptly-key-manager-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .${CDK_STACK_NAME}.KeyManagerRoleArn)" >> $GITHUB_OUTPUT
       - name: Deploy domain stack
         if: ${{ inputs.deploy-domain }}
         run: npx cdk deploy --require-approval never AptlyDomainStack${STACK_SUFFIX}
