@@ -35,3 +35,4 @@ jobs:
     with:
       stack-name: AptlyRepositoryStack
       add-branch-suffix: true
+    secrets: inherit
