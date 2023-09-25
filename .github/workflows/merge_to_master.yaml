@@ -30,6 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: run-tests
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
       - name: Install dependencies
         run: |
           pip3 install -r requirements.txt
@@ -66,3 +68,5 @@ jobs:
           --token ${{ secrets.REPOSITORY_PAT }}
           --name AWS_APTLY_PUBLISHER_ROLE_ARN
           --value ${{ needs.deploy-to-aws.outputs.aws-aptly-publisher-role-arn }}
+      - name: Checkout repository
+        uses: actions/checkout@v3
