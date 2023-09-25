@@ -9,12 +9,22 @@ on:
         type: boolean
         default: true
         description: "Deploy repository domain."
+      add-branch-suffix:
+        required: true
+        type: boolean
+        default: false
+        description: "Add branch hash as stack suffix."
+
   workflow_call:
     inputs:
       deploy-domain:
         required: true
         type: boolean
         description: "Deploy repository domain."
+      add-branch-suffix:
+        required: true
+        type: boolean
+        description: "Add branch hash as stack suffix."
     outputs:
       aws-aptly-bucket-name:
         description: "The name of the S3 bucket hosting Aptly packages and the public key."
@@ -58,12 +68,14 @@ jobs:
           role-to-assume: ${{ secrets.AWS_DEPLOYMENT_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           role-session-name: GithubRunnerDeployment
+      - name: Set stack suffix
+        if: ${{ github.events.inputs.add-branch-suffix }}
+        run: echo "STACK_SUFFIX=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       - name: Synthesize stacks
         run: npx cdk synth
       - name: Deploy repository stack
         id: cdk
         run: |
-          export STACK_SUFFIX=$(git rev-parse --short HEAD)
           export CDK_STACK_NAME=AptlyRepositoryStack${STACK_SUFFIX}
           npx cdk deploy --require-approval never ${CDK_STACK_NAME} --outputs-file /tmp/cdk-outputs.json
           echo "aws-aptly-bucket-name=$(cat /tmp/cdk-outputs.json | jq -r .${CDK_STACK_NAME}.BucketName)" >> $GITHUB_OUTPUT
@@ -72,8 +84,5 @@ jobs:
           echo $(cat /tmp/cdk-outputs.json | jq -r .${CDK_STACK_NAME}.BucketName)
       - name: Deploy domain stack
         if: ${{ github.events.inputs.deploy-domain }}
-        run: |
-          export STACK_PREFIX=$(git rev-parse --short HEAD)
-          export CDK_STACK_NAME=AptlyDomainStack${STACK_SUFFIX}
-          npx cdk deploy --require-approval never $CDK_STACK_NAME
+        run: npx cdk deploy --require-approval never AptlyDomainStack${STACK_SUFFIX}
       
