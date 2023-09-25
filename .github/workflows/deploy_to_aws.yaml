@@ -67,10 +67,10 @@ jobs:
           export CDK_STACK_NAME=${STACK_PREFIX}AptlyRepositoryStack"
           echo $CDK_STACK_NAME
           npx cdk deploy --require-approval never ${CDK_STACK_NAME} --outputs-file /tmp/cdk-outputs.json
-          cat /tmp/cdk-outputs.json
           echo "aws-aptly-bucket-name=$(cat /tmp/cdk-outputs.json | jq -r .${CDK_STACK_NAME}.BucketName)" >> $GITHUB_OUTPUT
           echo "aws-aptly-publisher-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .${CDK_STACK_NAME}.PublisherRoleArn)" >> $GITHUB_OUTPUT
           echo "aws-aptly-key_manager-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .${CDK_STACK_NAME}.KeyManagerRoleArn)" >> $GITHUB_OUTPUT
+          echo $(cat /tmp/cdk-outputs.json | jq -r .${CDK_STACK_NAME}.BucketName)
       - name: Deploy domain stack
         if: ${{ github.events.inputs.deploy-domain }}
         run: |
