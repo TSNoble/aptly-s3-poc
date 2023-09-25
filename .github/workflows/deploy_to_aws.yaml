@@ -64,7 +64,7 @@ jobs:
         id: cdk
         run: |
           export STACK_PREFIX=$(git rev-parse --short HEAD)
-          export CDK_STACK_NAME=${STACK_PREFIX}AptlyRepositoryStack"
+          export CDK_STACK_NAME=${STACK_PREFIX}AptlyRepositoryStack
           echo $CDK_STACK_NAME
           npx cdk deploy --require-approval never ${CDK_STACK_NAME} --outputs-file /tmp/cdk-outputs.json
           echo "aws-aptly-bucket-name=$(cat /tmp/cdk-outputs.json | jq -r .${CDK_STACK_NAME}.BucketName)" >> $GITHUB_OUTPUT
