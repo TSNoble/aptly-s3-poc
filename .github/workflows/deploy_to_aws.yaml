@@ -62,14 +62,21 @@ jobs:
         run: npx cdk synth
       - name: Deploy repository stack
         id: cdk
+        env:
+          STACK_PREFIX: ${{ github.event.pull_request.head.ref.GITHUB_HEAD_REF }}
         run: |
-          export CDK_STACK_NAME="${{ env.GITHUB_HEAD_REF }}AptlyRepositoryStack"
+          export CDK_STACK_NAME="${{ env.STACK_PREFIX }}AptlyRepositoryStack"
+          echo $CDK_STACK_NAME
           npx cdk deploy --require-approval never $CDK_STACK_NAME --outputs-file /tmp/cdk-outputs.json
           cat /tmp/cdk-outputs.json
-          echo "aws-aptly-bucket-name=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryStack.BucketName)" >> $GITHUB_OUTPUT
-          echo "aws-aptly-publisher-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryStack.PublisherRoleArn)" >> $GITHUB_OUTPUT
-          echo "aws-aptly-key_manager-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .AptlyRepositoryStack.KeyManagerRoleArn)" >> $GITHUB_OUTPUT
+          echo "aws-aptly-bucket-name=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.BucketName)" >> $GITHUB_OUTPUT
+          echo "aws-aptly-publisher-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.PublisherRoleArn)" >> $GITHUB_OUTPUT
+          echo "aws-aptly-key_manager-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .$CDK_STACK_NAME.KeyManagerRoleArn)" >> $GITHUB_OUTPUT
       - name: Deploy domain stack
         if: ${{ github.events.inputs.deploy-domain }}
-        run: npx cdk deploy --require-approval never AptlyDomainStack
+        env:
+          STACK_PREFIX: ${{ github.event.pull_request.head.ref.GITHUB_HEAD_REF }}
+        run: |
+          export CDK_STACK_NAME="${{ env.STACK_PREFIX }}AptlyDomainStack"
+          npx cdk deploy --require-approval never $CDK_STACK_NAME
       
