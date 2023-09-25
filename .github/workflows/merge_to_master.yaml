@@ -39,7 +39,6 @@ jobs:
           pip3 install -r requirements-dev.txt
       - name: Update bucket secret (KeyRotation)
         run: |
-          echo Bucket=${{ needs.deploy-to-aws.outputs.aws-aptly-bucket-name }}
           invoke create-github-secret \
             --repo ${{ github.repository_id }} \
             --environment KeyRotation \
@@ -47,28 +46,26 @@ jobs:
             --name AWS_APTLY_BUCKET_NAME \
             --value ${{ needs.deploy-to-aws.outputs.aws-aptly-bucket-name }}
       - name: Update key manager role secret (KeyRotation)
-        run: >
-          invoke create-github-secret
-          --repo ${{ github.repository_id }}
-          --environment KeyRotation
-          --token ${{ secrets.REPOSITORY_PAT }}
-          --name AWS_APTLY_KEY_MANAGER_ROLE_ARN
-          --value ${{ needs.deploy-to-aws.outputs.aws-aptly-key-manager-role-arn }}
+        run: |
+          invoke create-github-secret \
+            --repo ${{ github.repository_id }} \
+            --environment KeyRotation \
+            --token ${{ secrets.REPOSITORY_PAT }} \
+            --name AWS_APTLY_KEY_MANAGER_ROLE_ARN \
+            --value ${{ needs.deploy-to-aws.outputs.aws-aptly-key-manager-role-arn }}
       - name: Update bucket secret (Publish)
-        run: >
-          invoke create-github-secret
-          --repo ${{ github.repository_id }}
-          --environment Publish
-          --token ${{ secrets.REPOSITORY_PAT }}
-          --name AWS_APTLY_BUCKET_NAME
-          --value ${{ needs.deploy-to-aws.outputs.aws-aptly-bucket-name }}
+        run: |
+          invoke create-github-secret \
+            --repo ${{ github.repository_id }} \
+            --environment Publish \
+            --token ${{ secrets.REPOSITORY_PAT }} \
+            --name AWS_APTLY_BUCKET_NAME \
+            --value ${{ needs.deploy-to-aws.outputs.aws-aptly-bucket-name }}
       - name: Update publisher role secret (Publish)
-        run: >
-          invoke create-github-secret
-          --repo ${{ github.repository_id }}
-          --environment Publish
-          --token ${{ secrets.REPOSITORY_PAT }}
-          --name AWS_APTLY_PUBLISHER_ROLE_ARN
-          --value ${{ needs.deploy-to-aws.outputs.aws-aptly-publisher-role-arn }}
-      - name: Checkout repository
-        uses: actions/checkout@v3
+        run: |
+          invoke create-github-secret \
+            --repo ${{ github.repository_id }} \
+            --environment Publish \
+            --token ${{ secrets.REPOSITORY_PAT }} \
+            --name AWS_APTLY_PUBLISHER_ROLE_ARN \
+            --value ${{ needs.deploy-to-aws.outputs.aws-aptly-publisher-role-arn }}
