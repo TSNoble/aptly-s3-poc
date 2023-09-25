@@ -47,7 +47,7 @@ jobs:
       contents: read
     outputs:
       aws-aptly-bucket-name: ${{ steps.cdk.outputs.aws-aptly-bucket-name }}
-      aws-aptly_publisher-role-arn: ${{ steps.cdk.outputs.aws-aptly-publisher-role-arn }}
+      aws-aptly-publisher-role-arn: ${{ steps.cdk.outputs.aws-aptly-publisher-role-arn }}
       aws-aptly-key-manager-role-arn: ${{ steps.cdk.outputs.aws-aptly-key-manager-role-arn }}
     steps:
       - name: Checkout repository
