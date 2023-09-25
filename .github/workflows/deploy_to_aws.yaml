@@ -58,7 +58,7 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: |
-          echo ADD-BRANCH-SUFFIX=${{ github.events.inputs.add-branch-suffix }}
+          echo ADD-BRANCH-SUFFIX=${{ inputs.add-branch-suffix }}
           sudo apt-get install -y jq
           npm install
           pip3 install -r requirements.txt
