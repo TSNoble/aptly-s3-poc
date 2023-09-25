@@ -69,7 +69,7 @@ jobs:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           role-session-name: GithubRunnerDeployment
       - name: Set stack suffix
-        if: ${{ github.events.inputs.add-branch-suffix }}
+        if: ${{ github.events.inputs.add-branch-suffix == "true" }}
         run: echo "STACK_SUFFIX=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       - name: Synthesize stacks
         run: npx cdk synth
@@ -83,6 +83,6 @@ jobs:
           echo "aws-aptly-key_manager-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .${CDK_STACK_NAME}.KeyManagerRoleArn)" >> $GITHUB_OUTPUT
           echo $(cat /tmp/cdk-outputs.json | jq -r .${CDK_STACK_NAME}.BucketName)
       - name: Deploy domain stack
-        if: ${{ github.events.inputs.deploy-domain }}
+        if: ${{ github.events.inputs.deploy-domain == "true" }}
         run: npx cdk deploy --require-approval never AptlyDomainStack${STACK_SUFFIX}
       
