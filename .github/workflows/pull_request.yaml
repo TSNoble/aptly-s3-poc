@@ -28,6 +28,7 @@ jobs:
       aws-aptly-key-manager-role-arn: ${{ needs.deploy-to-aws.outputs.aws-key-manager-role-arn }}
     secrets: inherit
   destroy-stack:
+    needs: run-tests
     permissions:
       id-token: write
       contents: read
