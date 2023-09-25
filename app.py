@@ -11,20 +11,20 @@ from aws.stacks import (
 
 app = cdk.App()
 
-stack_prefix = os.getenv("STACK_PREFIX", default="")
+stack_suffix = os.getenv("STACK_SUFFIX", default="")
 github_provider_arn = os.environ["AWS_GITHUB_PROVIDER_ARN"]
 us_east_dev_account = env = cdk.Environment(account="778015471639", region="us-east-1")
 
 repository = repository_stack.AptlyRepositoryStack(
     scope=app,
-    id=f"{stack_prefix}AptlyRepositoryStack",
+    id=f"AptlyRepositoryStack{stack_suffix}",
     github_provider_arn=github_provider_arn,
     env=us_east_dev_account,
 )
 
 domain = domain_stack.AptlyDomainStack(
     scope=app,
-    id=f"{stack_prefix}AptlyDomainStack",
+    id=f"AptlyDomainStack{stack_suffix}",
     aptly_repository_stack=repository,
     domain="dev.downloads.rivel.in",
     env=us_east_dev_account,

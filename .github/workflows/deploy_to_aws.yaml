@@ -63,9 +63,8 @@ jobs:
       - name: Deploy repository stack
         id: cdk
         run: |
-          export STACK_PREFIX=$(git rev-parse --short HEAD)
-          export CDK_STACK_NAME=${STACK_PREFIX}AptlyRepositoryStack
-          echo $CDK_STACK_NAME
+          export STACK_SUFFIX=$(git rev-parse --short HEAD)
+          export CDK_STACK_NAME=AptlyRepositoryStack${STACK_SUFFIX}
           npx cdk deploy --require-approval never ${CDK_STACK_NAME} --outputs-file /tmp/cdk-outputs.json
           echo "aws-aptly-bucket-name=$(cat /tmp/cdk-outputs.json | jq -r .${CDK_STACK_NAME}.BucketName)" >> $GITHUB_OUTPUT
           echo "aws-aptly-publisher-role-arn=$(cat /tmp/cdk-outputs.json | jq -r .${CDK_STACK_NAME}.PublisherRoleArn)" >> $GITHUB_OUTPUT
@@ -75,6 +74,6 @@ jobs:
         if: ${{ github.events.inputs.deploy-domain }}
         run: |
           export STACK_PREFIX=$(git rev-parse --short HEAD)
-          export CDK_STACK_NAME=${STACK_PREFIX}AptlyDomainStack
+          export CDK_STACK_NAME=AptlyDomainStack${STACK_SUFFIX}
           npx cdk deploy --require-approval never $CDK_STACK_NAME
       
